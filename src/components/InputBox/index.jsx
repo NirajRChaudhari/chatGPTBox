@@ -103,7 +103,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
       <button
         className="submit-button"
         style={{
-          backgroundColor: enabled ? '#30a14e' : '#cf222e',
+          backgroundColor: enabled ? 'darkgoldenrod' : 'green',
         }}
         onClick={handleKeyDownOrClick}
       >
