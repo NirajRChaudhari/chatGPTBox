@@ -7,8 +7,7 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-
-// const logo = Browser.runtime.getURL('logo.png')
+import { ThreeDots } from 'react-bootstrap-icons' // Import the ellipsis icon
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
@@ -19,6 +18,7 @@ function FloatingToolbar(props) {
   const [closeable, setCloseable] = useState(props.closeable)
   const [position, setPosition] = useState(getClientPosition(props.container))
   const [virtualPosition, setVirtualPosition] = useState({ x: 0, y: 0 })
+  const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig(() => {
     setRender(true)
@@ -29,7 +29,7 @@ function FloatingToolbar(props) {
           Math.max(0, window.innerWidth - props.container.offsetWidth - 30),
           Math.max(0, position.x),
         )
-        props.container.style.left = left + 'px'
+        props.container.style.left = `${left}px`
       })
     }
   })
@@ -49,11 +49,24 @@ function FloatingToolbar(props) {
 
   if (!render) return <div />
 
+  const handleToolClick = useCallback(
+    async (toolConfig) => {
+      const p = getClientPosition(props.container)
+      props.container.style.position = 'fixed'
+      setPosition(p)
+      setPrompt(await toolConfig.genPrompt(selection))
+      setTriggered(true)
+    },
+    [selection, props],
+  )
+
   if (triggered) {
-    const updatePosition = () => {
+    const updatePosition = useCallback(() => {
       const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
-      if (position.x !== newPosition.x || position.y !== newPosition.y) setPosition(newPosition) // clear extra virtual position offset
-    }
+      if (position.x !== newPosition.x || position.y !== newPosition.y) {
+        setPosition(newPosition) // clear extra virtual position offset
+      }
+    }, [props.container, position])
 
     const dragEvent = {
       onDrag: (e, ui) => {
@@ -94,7 +107,7 @@ function FloatingToolbar(props) {
         >
           <div
             className="chatgptbox-selection-window"
-            style={{ width: windowSize[0] * 0.4 + 'px' }}
+            style={{ width: `${windowSize[0] * 0.4}px` }}
           >
             <div className="chatgptbox-container">
               <ConversationCard
@@ -104,7 +117,6 @@ function FloatingToolbar(props) {
                 closeable={closeable}
                 onClose={onClose}
                 dockable={props.dockable}
-                onDock={onDock}
                 onUpdate={onUpdate}
               />
             </div>
@@ -116,30 +128,61 @@ function FloatingToolbar(props) {
     if (config.activeSelectionTools.length === 0) return <div />
 
     const tools = []
+    const maxVisibleTools = 4 // Maximum number of visible tools
 
     for (const key in toolsConfig) {
       if (config.activeSelectionTools.includes(key)) {
         const toolConfig = toolsConfig[key]
-        tools.push(
-          cloneElement(toolConfig.icon, {
+        tools.push({
+          icon: cloneElement(toolConfig.icon, {
             size: 24,
-            className: 'chatgptbox-selection-toolbar-button',
             title: t(toolConfig.label),
-            onClick: async () => {
-              const p = getClientPosition(props.container)
-              props.container.style.position = 'fixed'
-              setPosition(p)
-              setPrompt(await toolConfig.genPrompt(selection))
-              setTriggered(true)
-            },
           }),
-        )
+          label: t(toolConfig.label),
+          onClick: () => handleToolClick(toolConfig),
+        })
       }
+    }
+
+    // Slice tools array to show only the first 4 tools
+    const visibleTools = tools.slice(0, maxVisibleTools)
+    const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
+
+    // Toggle visibility of hidden tools
+    const toggleHiddenTools = () => {
+      setHiddenToolsVisible(!hiddenToolsVisible)
     }
 
     return (
       <div data-theme={config.themeMode}>
-        <div className="chatgptbox-selection-toolbar">{tools}</div>
+        <div className="chatgptbox-selection-toolbar">
+          {visibleTools.map((tool, index) => (
+            <div key={index} className="chatgptbox-selection-toolbar-button" onClick={tool.onClick}>
+              {tool.icon}
+              <span className="tool-label">{tool.label}</span>{' '}
+              {/* Add label to each visible tool */}
+            </div>
+          ))}
+          {/* Three dots icon to toggle visibility of hidden tools */}
+          <div className="chatgptbox-selection-toolbar-button" onClick={toggleHiddenTools}>
+            <ThreeDots size={24} />
+          </div>
+          {hiddenToolsVisible && (
+            <div className="chatgptbox-selection-toolbar-hidden-tools">
+              {hiddenTools.map((tool, index) => (
+                <div
+                  key={index}
+                  className="chatgptbox-selection-toolbar-button"
+                  onClick={tool.onClick}
+                >
+                  {tool.icon}
+                  <span className="tool-label">{tool.label}</span>{' '}
+                  {/* Add label to each hidden tool */}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     )
   }

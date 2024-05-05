@@ -1417,15 +1417,35 @@
   padding: 2px;
   background-color: var(--theme-color);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  width: auto; /* Remove fixed width */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent options from wrapping onto the next line */
+}
+
+.chatgptbox-selection-toolbar-hidden-tools {
+  display: flex;
+  flex-direction: column; /* Show hidden tools in a vertical list */
+  position: absolute; /* Position the hidden tools absolutely */
+  top: calc(100% + 5px); /* Position the hidden tools below the toolbar */
+  right: 0; /* Align the hidden tools with the left edge of the toolbar */
+  background-color: var(--theme-color); /* Match toolbar background */
+  border-radius: 8px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 5px; /* Add padding for the hidden tools */
 }
 
 .chatgptbox-selection-toolbar-button {
   margin: 0 2px 0 0;
   padding: 2px;
-  border-radius: 30px;
-  background-color: var(--theme-color);
-  color: var(--toolbar-color);
+  border-radius: 0; /* Keep border radius as 0 */
+  display: flex;
+  align-items: center; /* Vertically center align content */
+  justify-content: space-around;
   cursor: pointer;
+}
+
+.tool-label {
+  font-size: 14px;
 }
 
 .chatgptbox-selection-toolbar-button:hover {
