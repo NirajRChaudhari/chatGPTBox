@@ -50,22 +50,46 @@ import { generateAnswersWithMoonshotCompletionApi } from '../services/apis/moons
 import { generateAnswersWithMoonshotWebApi } from '../services/apis/moonshot-web.mjs'
 
 function setPortProxy(port, proxyTabId) {
+  // Disconnect existing proxy if it exists
+  if (port.proxy) {
+    try {
+      port.proxy.disconnect()
+    } catch (error) {
+      console.error('Error disconnecting existing proxy:', error)
+    }
+  }
+
+  // Connect to new tab
   port.proxy = Browser.tabs.connect(proxyTabId)
   const proxyOnMessage = (msg) => {
-    port.postMessage(msg)
+    try {
+      port.postMessage(msg)
+    } catch (error) {
+      console.error('Error posting message to port:', error)
+    }
   }
   const portOnMessage = (msg) => {
-    port.proxy.postMessage(msg)
+    try {
+      port.proxy.postMessage(msg)
+    } catch (error) {
+      console.error('Error posting message to proxy:', error)
+    }
   }
   const proxyOnDisconnect = () => {
-    port.proxy = Browser.tabs.connect(proxyTabId)
+    port.proxy = null
+    console.log('Proxy has been disconnected.')
   }
   const portOnDisconnect = () => {
-    port.proxy.onMessage.removeListener(proxyOnMessage)
+    if (port.proxy) {
+      port.proxy.onMessage.removeListener(proxyOnMessage)
+      port.proxy.onDisconnect.removeListener(proxyOnDisconnect)
+      port.proxy.disconnect()
+    }
     port.onMessage.removeListener(portOnMessage)
-    port.proxy.onDisconnect.removeListener(proxyOnDisconnect)
     port.onDisconnect.removeListener(portOnDisconnect)
+    console.log('Port has been disconnected.')
   }
+
   port.proxy.onMessage.addListener(proxyOnMessage)
   port.onMessage.addListener(portOnMessage)
   port.proxy.onDisconnect.addListener(proxyOnDisconnect)
@@ -86,7 +110,29 @@ async function executeApi(session, port, config) {
     if (tabId) {
       if (!port.proxy) {
         setPortProxy(port, tabId)
-        port.proxy.postMessage({ session })
+      }
+      if (port.proxy) {
+        try {
+          port.proxy.postMessage({ session })
+        } catch (error) {
+          console.error('Error sending message to proxy:', error)
+          // Retry connection setup and send message
+          await retrySetProxyAndSendMessage(port, tabId, session)
+        }
+      } else {
+        console.error('Proxy not set up correctly.')
+        // Try to set up proxy again
+        setPortProxy(port, tabId)
+        if (port.proxy) {
+          try {
+            port.proxy.postMessage({ session })
+          } catch (error) {
+            console.error('Failed to send message after retry:', error)
+            // Fallback to direct API call
+            const accessToken = await getChatGptAccessToken()
+            await generateAnswersWithChatgptWebApi(port, session.question, session, accessToken)
+          }
+        }
       }
     } else {
       const accessToken = await getChatGptAccessToken()
@@ -171,6 +217,18 @@ async function executeApi(session, port, config) {
       config,
       session.modelName,
     )
+  }
+}
+
+async function retrySetProxyAndSendMessage(port, tabId, session) {
+  try {
+    setPortProxy(port, tabId)
+    await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait for 1 second to stabilize connection
+    port.proxy.postMessage({ session })
+  } catch (error) {
+    console.error('Retry failed:', error)
+    // Final fallback, perhaps switching to a different strategy or notifying the user
+    throw new Error('Unable to establish connection with the proxy.')
   }
 }
 
