@@ -1,5 +1,6 @@
 import './styles.scss'
 import { unmountComponentAtNode } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { render } from 'preact'
 import DecisionCard from '../components/DecisionCard'
 import { config as siteConfig } from './site-adapters'
@@ -32,6 +33,28 @@ import NotificationForChatGPTWeb from '../components/NotificationForChatGPTWeb'
  * @param {SiteConfig} siteConfig
  * @param {UserConfig} userConfig
  */
+
+let focusedInput = null
+function setupFocusTracking() {
+  document.addEventListener('mouseup', (event) => {
+    const selection = window.getSelection()
+
+    if (selection && selection.toString().length > 0) {
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+        focusedInput = event.target
+      }
+    }
+  })
+
+  document.addEventListener('mousedown', () => {
+    if (focusedInput) {
+      focusedInput = null
+    }
+  })
+}
+
+let decisionCardRoot = null // We'll store our root here
+
 async function mountComponent(siteConfig, userConfig) {
   const retry = 10
   let oldUrl = location.href
@@ -70,16 +93,22 @@ async function mountComponent(siteConfig, userConfig) {
     unmountComponentAtNode(e)
     e.remove()
   })
+
   const container = document.createElement('div')
   container.id = 'chatgptbox-container'
-  render(
+  if (decisionCardRoot) {
+    decisionCardRoot.unmount() // Unmounting if there was a previous instance
+  }
+
+  decisionCardRoot = createRoot(container) // Create a root for the container
+  decisionCardRoot.render(
     <DecisionCard
       session={initSession({ modelName: (await getUserConfig()).modelName })}
       question={question}
       siteConfig={siteConfig}
+      focusedInput={focusedInput}
       container={container}
     />,
-    container,
   )
 }
 
@@ -124,6 +153,7 @@ const createSelectionTools = async (toolbarContainer, selection) => {
       selection={selection}
       container={toolbarContainer}
       dockable={true}
+      focusedInput={focusedInput}
     />,
     toolbarContainer,
   )
@@ -251,6 +281,7 @@ async function prepareForRightClickMenu() {
           triggered={true}
           closeable={true}
           prompt={prompt}
+          focusedInput={focusedInput}
         />,
         container,
       )
@@ -368,6 +399,8 @@ async function run() {
 
   await overwriteAccessToken()
   await prepareForForegroundRequests()
+
+  setupFocusTracking()
 
   prepareForSelectionTools()
   prepareForSelectionToolsTouch()

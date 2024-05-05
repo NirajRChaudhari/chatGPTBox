@@ -41,9 +41,9 @@ const createGenPrompt =
   }
 
 const commonStyle = {
-  transform: 'scale(0.8)',
+  transform: 'scale(0.7)',
   borderRadius: '0px',
-  padding: '4px',
+  margin: '3px 4px',
 }
 
 export const config = {

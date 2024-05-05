@@ -7,6 +7,8 @@ import MarkdownRender from '../MarkdownRender/markdown.jsx'
 import { useTranslation } from 'react-i18next'
 import { isUsingCustomModel } from '../../config/index.mjs'
 import { useConfig } from '../../hooks/use-config.mjs'
+import { TextareaT } from 'react-bootstrap-icons'
+import ReactTooltip from 'react-tooltip'
 
 function AnswerTitle({ descName, modelName }) {
   const { t } = useTranslation()
@@ -28,9 +30,22 @@ AnswerTitle.propTypes = {
   modelName: PropTypes.string,
 }
 
-export function ConversationItem({ type, content, descName, modelName, onRetry }) {
+export function ConversationItem({ type, content, descName, modelName, onRetry, focusedInput }) {
   const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
+
+  const replaceTextInFocusedInput = () => {
+    if ((focusedInput && focusedInput.tagName === 'INPUT') || focusedInput.tagName === 'TEXTAREA') {
+      const text = content
+      const { selectionStart, selectionEnd } = focusedInput
+      focusedInput.value =
+        focusedInput.value.substring(0, selectionStart) +
+        text +
+        focusedInput.value.substring(selectionEnd)
+      focusedInput.focus()
+      focusedInput.setSelectionRange(selectionStart, selectionStart + text.length)
+    }
+  }
 
   switch (type) {
     case 'question':
@@ -69,6 +84,17 @@ export function ConversationItem({ type, content, descName, modelName, onRetry }
           <div className="gpt-header">
             <AnswerTitle descName={descName} modelName={modelName} />
             <div className="gpt-util-group">
+              {focusedInput && (
+                <>
+                  <TextareaT
+                    onClick={replaceTextInFocusedInput}
+                    style={{ cursor: 'pointer', fontSize: '20px' }}
+                    data-tip={t('Replace Text')}
+                  />
+                  <ReactTooltip />
+                </>
+              )}
+
               {onRetry && (
                 <span title={t('Retry')} className="gpt-util-icon" onClick={onRetry}>
                   <SyncIcon size={14} />
@@ -143,6 +169,7 @@ ConversationItem.propTypes = {
   descName: PropTypes.string,
   modelName: PropTypes.string,
   onRetry: PropTypes.func,
+  focusedInput: PropTypes.object,
 }
 
 export default memo(ConversationItem)

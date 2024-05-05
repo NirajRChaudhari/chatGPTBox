@@ -513,6 +513,7 @@ function ConversationCard(props) {
             descName={data.type === 'answer' && session.aiName}
             modelName={data.type === 'answer' && session.modelName}
             onRetry={idx === conversationItemData.length - 1 ? retryFn : null}
+            focusedInput={props.focusedInput} // Pass focused input to each ConversationItem
           />
         ))}
       </div>
@@ -557,6 +558,7 @@ ConversationCard.propTypes = {
   onDock: PropTypes.func,
   notClampSize: PropTypes.bool,
   pageMode: PropTypes.bool,
+  focusedInput: PropTypes.object, // Expecting a DOM element reference
 }
 
 export default memo(ConversationCard)

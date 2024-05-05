@@ -145,6 +145,7 @@ function FloatingToolbar(props) {
                 onClose={onClose}
                 dockable={props.dockable}
                 onUpdate={onUpdate}
+                focusedInput={props.focusedInput}
               />
             </div>
           </div>
@@ -185,7 +186,7 @@ function FloatingToolbar(props) {
                 marginLeft: '4px',
                 marginRight: '3px',
                 color: 'goldenrod',
-                transition: 'color 0.3s ease', // Add transition for color change
+                transition: 'color 0.2s ease', // Add transition for color change
               }}
               onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
               onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
@@ -222,7 +223,7 @@ function FloatingToolbar(props) {
                 marginLeft: '4px',
                 marginRight: '3px',
                 color: 'goldenrod',
-                transition: 'color 0.3s ease', // Add transition for color change
+                transition: 'color 0.2s ease', // Add transition for color change
               }}
               onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
               onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
@@ -278,6 +279,7 @@ FloatingToolbar.propTypes = {
   closeable: PropTypes.bool,
   dockable: PropTypes.bool,
   prompt: PropTypes.string,
+  focusedInput: PropTypes.object,
 }
 
 export default FloatingToolbar

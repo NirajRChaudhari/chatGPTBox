@@ -14,7 +14,13 @@ function DecisionCard(props) {
     setRender(true)
   })
 
-  const question = props.question
+  const { question, focusedInput } = props
+
+  useEffect(() => {
+    if (props.container) {
+      updatePosition()
+    }
+  }, [config, props.container])
 
   const updatePosition = () => {
     if (!render) return
@@ -65,8 +71,6 @@ function DecisionCard(props) {
     }
   }
 
-  useEffect(() => updatePosition(), [config])
-
   return (
     render && (
       <div data-theme={config.themeMode}>
@@ -74,10 +78,22 @@ function DecisionCard(props) {
           if (question)
             switch (config.triggerMode) {
               case 'always':
-                return <ConversationCard session={props.session} question={question} />
+                return (
+                  <ConversationCard
+                    session={props.session}
+                    question={question}
+                    focusedInput={focusedInput}
+                  />
+                )
               case 'manually':
                 if (triggered) {
-                  return <ConversationCard session={props.session} question={question} />
+                  return (
+                    <ConversationCard
+                      session={props.session}
+                      question={question}
+                      focusedInput={focusedInput}
+                    />
+                  )
                 }
                 return (
                   <p className="gpt-inner manual-btn" onClick={() => setTriggered(true)}>
@@ -88,10 +104,22 @@ function DecisionCard(props) {
                 )
               case 'questionMark':
                 if (endsWithQuestionMark(question.trim())) {
-                  return <ConversationCard session={props.session} question={question} />
+                  return (
+                    <ConversationCard
+                      session={props.session}
+                      question={question}
+                      focusedInput={focusedInput}
+                    />
+                  )
                 }
                 if (triggered) {
-                  return <ConversationCard session={props.session} question={question} />
+                  return (
+                    <ConversationCard
+                      session={props.session}
+                      question={question}
+                      focusedInput={focusedInput}
+                    />
+                  )
                 }
                 return (
                   <p className="gpt-inner manual-btn" onClick={() => setTriggered(true)}>
@@ -120,6 +148,7 @@ DecisionCard.propTypes = {
   question: PropTypes.string.isRequired,
   siteConfig: PropTypes.object.isRequired,
   container: PropTypes.object.isRequired,
+  focusedInput: PropTypes.instanceOf(Element),
 }
 
 export default DecisionCard
