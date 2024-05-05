@@ -1492,3 +1492,67 @@
   background-color: var(--theme-color);
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
+/* Styling for the popup */
+.chatgptbox-ask-input-popup {
+  display: flex;
+  flex-direction: column; /* Changes to column to stack the elements */
+  position: absolute;
+  top: -90px; /* Adjust the position as needed */
+  right: 0;
+  left: 0;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Styling for displaying selected text */
+.chatgptbox-ask-input-popup .selected-text-display {
+  padding: 0 8px;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 3px; /* Adjust for visual balance */
+}
+
+/* Horizontal rule to visually separate selected text from the input area */
+.chatgptbox-ask-input-popup .divider {
+  border: 0;
+  height: 1px;
+  background-color: #ccc; /* Light grey line */
+  margin: 5px 0; /* Spacing above and below the line */
+}
+
+/* Flex container for textarea and send icon */
+.chatgptbox-ask-input-popup .input-with-icon {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+/* Textarea styling */
+.chatgptbox-ask-input-popup .popup-textarea {
+  flex-grow: 1;
+  min-height: 40px;
+  border: none;
+  outline: none;
+  padding: 6px;
+  font-size: 13px;
+  resize: none;
+}
+
+/* Styling for the send icon */
+.chatgptbox-ask-input-popup .send-icon {
+  cursor: pointer;
+  color: #ccc;
+  margin-left: 10px;
+  transition: color 0.3s;
+}
+
+.chatgptbox-ask-input-popup .send-icon:hover {
+  color: goldenrod;
+}

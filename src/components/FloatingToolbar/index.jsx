@@ -7,7 +7,7 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-import { ThreeDots, CpuFill } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
+import { ThreeDots, CpuFill, ArrowRightCircleFill, QuestionCircle } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 
@@ -23,6 +23,8 @@ function FloatingToolbar(props) {
   const [virtualPosition, setVirtualPosition] = useState({ x: 0, y: 0 })
   const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
   const [modulePopupVisible, setModulePopupVisible] = useState(false) // New state for module popup visibility
+  const [askPopupVisible, setAskPopupVisible] = useState(false)
+  const [inputText, setInputText] = useState('')
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
 
@@ -54,6 +56,29 @@ function FloatingToolbar(props) {
   }, [])
 
   if (!render) return <div />
+
+  const toggleAskPopup = () => {
+    setAskPopupVisible(!askPopupVisible)
+  }
+
+  const handleAskInputChange = (e) => {
+    setInputText(e.target.value)
+  }
+  const handleAskKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault() // Prevents the default action of the enter key
+      handleAskSendClick()
+    }
+  }
+  const handleAskSendClick = async () => {
+    const p = getClientPosition(props.container)
+    props.container.style.position = 'fixed'
+    setPosition(p)
+    setPrompt(await toolsConfig.ask.genPrompt(inputText + '&*&' + selection))
+    console.log(inputText + '&*&' + selection)
+    setTriggered(true)
+    setAskPopupVisible(false)
+  }
 
   const toggleModulePopup = () => {
     setModulePopupVisible(!modulePopupVisible)
@@ -193,7 +218,35 @@ function FloatingToolbar(props) {
             />{' '}
             {/* CpuFill icon for model selection */}
           </div>
-
+          <div className="chatgptbox-selection-toolbar-button" onClick={toggleAskPopup}>
+            <QuestionCircle
+              size={18}
+              style={{
+                marginLeft: '4px',
+                marginRight: '3px',
+              }}
+            />
+          </div>
+          {askPopupVisible && (
+            <div className="chatgptbox-ask-input-popup">
+              <div className="selected-text-display">{selection}</div>
+              <hr className="divider" />
+              <div className="input-with-icon">
+                <textarea
+                  value={inputText}
+                  onChange={handleAskInputChange}
+                  onKeyDown={handleAskKeyDown}
+                  className="popup-textarea"
+                  placeholder="Type your question here..."
+                />
+                <ArrowRightCircleFill
+                  size={25}
+                  onClick={handleAskSendClick}
+                  className="send-icon"
+                />
+              </div>
+            </div>
+          )}
           {visibleTools.map((tool, index) => (
             <div
               key={index}
