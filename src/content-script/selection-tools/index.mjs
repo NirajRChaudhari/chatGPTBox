@@ -2,7 +2,6 @@ import {
   CardHeading,
   CardList,
   EmojiSmile,
-  QuestionCircle,
   Translate,
   Braces,
   Globe,
@@ -47,15 +46,6 @@ const commonStyle = {
 }
 
 export const config = {
-  ask: {
-    icon: <QuestionCircle style={{ ...commonStyle }} />,
-    label: 'Ask',
-    genPrompt: createGenPrompt({
-      message:
-        'Please provide a thorough response to the following question without enclosing your answers in quotation marks. Use the same language style as the given text. Utilize available online resources and your extensive training data to ensure a well-informed and comprehensive answer:',
-      includeLanguagePrefix: true,
-    }),
-  },
   improve: {
     icon: <Magic style={{ ...commonStyle }} />,
     label: 'Improve',

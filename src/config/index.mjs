@@ -261,7 +261,7 @@ export const defaultConfig = {
     'customModel',
     'azureOpenAi',
   ],
-  activeSelectionTools: ['translate', 'summary', 'polish', 'code', 'ask'],
+  activeSelectionTools: ['improve', 'fixError', 'explain', 'makeShorter'],
   activeSiteAdapters: [
     'bilibili',
     'github',
@@ -303,7 +303,6 @@ export const defaultConfig = {
     'sentiment',
     'divide',
     'code',
-    'ask',
   ],
   selectionToolsDesc: [
     'Explain',
@@ -318,7 +317,6 @@ export const defaultConfig = {
     'Sentiment Analysis',
     'Divide Paragraphs',
     'Code Explain',
-    'Ask',
   ],
   // importing configuration will result in gpt-3-encoder being packaged into the output file
   siteAdapters: [

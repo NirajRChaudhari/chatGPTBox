@@ -1497,7 +1497,7 @@
   display: flex;
   flex-direction: column; /* Changes to column to stack the elements */
   position: absolute;
-  top: -90px; /* Adjust the position as needed */
+  top: -95px; /* Adjust the position as needed */
   right: 0;
   left: 0;
   background-color: #fff;
@@ -1505,18 +1505,67 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 8px;
   border-bottom: 1px solid #ccc;
+  z-index: 9999;
 }
 
-/* Styling for displaying selected text */
+/* Styling for displaying selected text container */
 .chatgptbox-ask-input-popup .selected-text-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures space distribution between text and toggle */
   padding: 0 8px;
-  white-space: nowrap;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
   color: #666;
   font-size: 13px;
   margin-bottom: 3px; /* Adjust for visual balance */
+}
+
+/* Styling for the text part within the selected-text-display */
+.chatgptbox-ask-input-popup .selected-text-display .text-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1; /* Allows text to fill available space minus what's needed for the toggle */
+  margin-right: 4px; /* Provides a gap between the text and the toggle */
+}
+
+.chatgptbox-ask-input-popup .selected-text-display .include-checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 16px; /* Explicit width */
+  height: 16px; /* Explicit height */
+  border: 2px solid goldenrod;
+  border-radius: 4px;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+  flex-shrink: 0; /* Prevents the checkbox from shrinking */
+  display: inline-block; /* Keeps the checkbox in line */
+  vertical-align: middle;
+  outline: none; /* Removes the blue outline on focus */
+}
+
+/* Style the tick */
+.selected-text-display .include-checkbox:checked::before {
+  content: '\2713'; /* Unicode for checkmark symbol */
+  position: absolute; /* Position absolutely within the checkbox */
+  top: -1px; /* Adjustment for positioning the checkmark vertically */
+  left: -1px; /* Center the checkmark horizontally */
+  font-size: 14px; /* Adjust size as needed */
+  width: 15px; /* Full width of the checkbox */
+  color: goldenrod; /* Set color to golden */
+  line-height: 15px; /* Match the height of the checkbox for vertical alignment */
+  text-align: center; /* Horizontal alignment */
+}
+
+.chatgptbox-ask-input-popup .selected-text-display .include-checkbox:focus {
+  box-shadow: none; /* Optionally add a subtle shadow or border if needed */
+}
+
+/* Dimmed text styling */
+.chatgptbox-ask-input-popup .text-dim {
+  color: #ccc; /* Light grey to indicate it's not included */
 }
 
 /* Horizontal rule to visually separate selected text from the input area */
@@ -1538,11 +1587,14 @@
 .chatgptbox-ask-input-popup .popup-textarea {
   flex-grow: 1;
   min-height: 40px;
+  max-height: 80px; /* Set maximum height before scrolling */
+  overflow-y: auto; /* Allows scrolling vertically */
   border: none;
   outline: none;
   padding: 6px;
   font-size: 13px;
-  resize: none;
+  resize: none; /* Disables resizing the textarea */
+  box-sizing: border-box; /* Includes padding in the height calculation */
 }
 
 /* Styling for the send icon */

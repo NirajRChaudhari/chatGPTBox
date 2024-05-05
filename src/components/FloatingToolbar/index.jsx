@@ -7,14 +7,16 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-import { ThreeDots, CpuFill, ArrowRightCircleFill, QuestionCircle } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
+import { ThreeDots, CpuFill, ArrowRightCircleFill } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
+import { CopilotIcon } from '@primer/octicons-react'
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
   const [session, setSession] = useState(props.session)
   const [selection, setSelection] = useState(props.selection)
+  const [includeSelection, setIncludeSelection] = useState(true)
   const [prompt, setPrompt] = useState(props.prompt)
   const [triggered, setTriggered] = useState(props.triggered)
   const [render, setRender] = useState(false)
@@ -24,7 +26,7 @@ function FloatingToolbar(props) {
   const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
   const [modulePopupVisible, setModulePopupVisible] = useState(false) // New state for module popup visibility
   const [askPopupVisible, setAskPopupVisible] = useState(false)
-  const [inputText, setInputText] = useState('')
+  const [askInputText, setAskInputText] = useState('')
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
 
@@ -62,11 +64,12 @@ function FloatingToolbar(props) {
   }
 
   const handleAskInputChange = (e) => {
-    setInputText(e.target.value)
+    setAskInputText(e.target.value)
   }
-  const handleAskKeyDown = (event) => {
+  const handleAskKeyDown = async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault() // Prevents the default action of the enter key
+      event.stopPropagation()
+      event.preventDefault()
       handleAskSendClick()
     }
   }
@@ -74,10 +77,38 @@ function FloatingToolbar(props) {
     const p = getClientPosition(props.container)
     props.container.style.position = 'fixed'
     setPosition(p)
-    setPrompt(await toolsConfig.ask.genPrompt(inputText + '&*&' + selection))
-    console.log(inputText + '&*&' + selection)
+
+    let askPrompt = ''
+
+    if (includeSelection) {
+      askPrompt = `Please thoroughly perform the suggested task below on the text. Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the same language (in other words don't change the language).
+      - Task to perform: ${askInputText}
+      - Text on which to perform task : ${selection}
+      `
+    } else {
+      askPrompt =
+        `Please provide a thorough response to the following question delimited by triple quotes below without enclosing your answers in quotation marks. Use the same language style as the given text. Utilize available online resources and your extensive training data to ensure a well-informed and comprehensive answer: """` +
+        askInputText +
+        `"""`
+    }
+
+    console.log(askPrompt)
+
+    setPrompt(askPrompt)
     setTriggered(true)
+    setAskInputText('')
     setAskPopupVisible(false)
+  }
+  const toggleAskSelection = () => {
+    setIncludeSelection(!includeSelection)
+  }
+  const handleAskTextareaInput = (event) => {
+    const textarea = event.target
+    textarea.style.height = 'auto' // Reset the height to recalculate
+    textarea.style.height = textarea.scrollHeight + 'px' // Set height based on scroll height
+    if (textarea.scrollHeight >= 80) {
+      textarea.style.height = '80px' // Cap the height at 80px
+    }
   }
 
   const toggleModulePopup = () => {
@@ -181,7 +212,7 @@ function FloatingToolbar(props) {
     if (config.activeSelectionTools.length === 0) return <div />
 
     const tools = []
-    const maxVisibleTools = 5 // Maximum number of visible tools
+    const maxVisibleTools = 4 // Maximum number of visible tools
 
     for (const key in toolsConfig) {
       if (config.activeSelectionTools.includes(key)) {
@@ -218,23 +249,39 @@ function FloatingToolbar(props) {
             />{' '}
             {/* CpuFill icon for model selection */}
           </div>
-          <div className="chatgptbox-selection-toolbar-button" onClick={toggleAskPopup}>
-            <QuestionCircle
-              size={18}
+          <div
+            className="chatgptbox-selection-toolbar-button"
+            style={{ height: '100%' }}
+            onClick={toggleAskPopup}
+          >
+            <CopilotIcon
+              size={19}
               style={{
-                marginLeft: '4px',
+                paddingLeft: '6px',
+                paddingRight: '6px',
                 marginRight: '3px',
               }}
             />
           </div>
           {askPopupVisible && (
             <div className="chatgptbox-ask-input-popup">
-              <div className="selected-text-display">{selection}</div>
+              <div className="selected-text-display">
+                <span className={`text-content ${includeSelection ? '' : 'text-dim'}`}>
+                  {selection}
+                </span>
+                <input
+                  type="checkbox"
+                  className="include-checkbox"
+                  checked={includeSelection}
+                  onChange={toggleAskSelection}
+                />
+              </div>
               <hr className="divider" />
               <div className="input-with-icon">
                 <textarea
-                  value={inputText}
+                  value={askInputText}
                   onChange={handleAskInputChange}
+                  onInput={handleAskTextareaInput}
                   onKeyDown={handleAskKeyDown}
                   className="popup-textarea"
                   placeholder="Type your question here..."
