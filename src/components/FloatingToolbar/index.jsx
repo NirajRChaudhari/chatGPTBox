@@ -7,10 +7,12 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-import { ThreeDots } from 'react-bootstrap-icons' // Import the ellipsis icon
+import { ThreeDots } from 'react-bootstrap-icons'
+import { Models } from '../../config/index.mjs'
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
+  const [session, setSession] = useState(props.session)
   const [selection, setSelection] = useState(props.selection)
   const [prompt, setPrompt] = useState(props.prompt)
   const [triggered, setTriggered] = useState(props.triggered)
@@ -20,7 +22,9 @@ function FloatingToolbar(props) {
   const [virtualPosition, setVirtualPosition] = useState({ x: 0, y: 0 })
   const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
-  const config = useConfig(() => {
+  const config = useConfig()
+
+  useEffect(() => {
     setRender(true)
     if (!triggered) {
       props.container.style.position = 'absolute'
@@ -30,9 +34,9 @@ function FloatingToolbar(props) {
           Math.max(0, position.x),
         )
         props.container.style.left = `${left}px`
-      })
+      }, 0)
     }
-  })
+  }, [triggered, props.container, position.x, window.innerWidth])
 
   useEffect(() => {
     if (isMobile()) {
@@ -57,14 +61,14 @@ function FloatingToolbar(props) {
       setPrompt(await toolConfig.genPrompt(selection))
       setTriggered(true)
     },
-    [selection, props],
+    [selection, props.container],
   )
 
   if (triggered) {
     const updatePosition = useCallback(() => {
       const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
       if (position.x !== newPosition.x || position.y !== newPosition.y) {
-        setPosition(newPosition) // clear extra virtual position offset
+        setPosition(newPosition)
       }
     }, [props.container, position])
 
@@ -79,17 +83,17 @@ function FloatingToolbar(props) {
     }
 
     if (virtualPosition.x === 0 && virtualPosition.y === 0) {
-      updatePosition() // avoid jitter
+      updatePosition()
     }
 
     const onClose = useCallback(() => {
       props.container.remove()
-    }, [])
+    }, [props.container])
 
     const onDock = useCallback(() => {
       props.container.className = 'chatgptbox-toolbar-container-not-queryable'
       setCloseable(true)
-    }, [])
+    }, [props.container])
 
     const onUpdate = useCallback(() => {
       updatePosition()
@@ -111,7 +115,7 @@ function FloatingToolbar(props) {
           >
             <div className="chatgptbox-container">
               <ConversationCard
-                session={props.session}
+                session={session}
                 question={prompt}
                 draggable={true}
                 closeable={closeable}
@@ -156,6 +160,33 @@ function FloatingToolbar(props) {
     return (
       <div data-theme={config.themeMode}>
         <div className="chatgptbox-selection-toolbar">
+          {/* Model selection dropdown */}
+          <select
+            className="normal-button"
+            onChange={(e) => {
+              const modelName = e.target.value
+              const newSession = {
+                ...session,
+                modelName,
+                aiName: Models[modelName].desc,
+              }
+              setSession(newSession)
+            }}
+            value={session.modelName}
+          >
+            {config.activeApiModes.map((modelName) => {
+              let desc = modelName
+              if (modelName in Models) {
+                desc = `${t(Models[modelName].desc)}`
+              }
+              return (
+                <option key={modelName} value={modelName}>
+                  {desc}
+                </option>
+              )
+            })}
+          </select>
+
           {visibleTools.map((tool, index) => (
             <div key={index} className="chatgptbox-selection-toolbar-button" onClick={tool.onClick}>
               {tool.icon}
@@ -163,7 +194,6 @@ function FloatingToolbar(props) {
               {/* Add label to each visible tool */}
             </div>
           ))}
-          {/* Three dots icon to toggle visibility of hidden tools */}
           <div className="chatgptbox-selection-toolbar-button" onClick={toggleHiddenTools}>
             <ThreeDots size={24} />
           </div>
@@ -189,7 +219,10 @@ function FloatingToolbar(props) {
 }
 
 FloatingToolbar.propTypes = {
-  session: PropTypes.object.isRequired,
+  session: PropTypes.shape({
+    modelName: PropTypes.string.isRequired,
+    aiName: PropTypes.string,
+  }).isRequired,
   selection: PropTypes.string.isRequired,
   container: PropTypes.object.isRequired,
   triggered: PropTypes.bool,
