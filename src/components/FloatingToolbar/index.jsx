@@ -156,7 +156,7 @@ function FloatingToolbar(props) {
     if (config.activeSelectionTools.length === 0) return <div />
 
     const tools = []
-    const maxVisibleTools = 4 // Maximum number of visible tools
+    const maxVisibleTools = 5 // Maximum number of visible tools
 
     for (const key in toolsConfig) {
       if (config.activeSelectionTools.includes(key)) {
