@@ -43,16 +43,16 @@ const createGenPrompt =
 const commonStyle = {
   transform: 'scale(0.8)',
   borderRadius: '0px',
-  padding: '4px 5px 4px 2px',
+  padding: '4px',
 }
 
 export const config = {
-  explain: {
-    icon: <ChatText style={{ ...commonStyle }} />,
-    label: 'Explain',
+  improve: {
+    icon: <Magic style={{ ...commonStyle }} />,
+    label: 'Improve',
     genPrompt: createGenPrompt({
-      message: 'Explain the following',
-      includeLanguagePrefix: true,
+      message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes below and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience.
+        Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).`,
     }),
   },
   assistant: {
@@ -104,6 +104,14 @@ export const config = {
       Text to perform task is given in triple quotes below:`,
     }),
   },
+  explain: {
+    icon: <ChatText style={{ ...commonStyle }} />,
+    label: 'Explain',
+    genPrompt: createGenPrompt({
+      message: 'Explain the following',
+      includeLanguagePrefix: true,
+    }),
+  },
   makeShorter: {
     icon: <ArrowsCollapse style={{ ...commonStyle }} />,
     label: 'Shorter',
@@ -128,8 +136,7 @@ export const config = {
   },
   translateToEn: {
     icon: <Globe style={{ ...commonStyle }} />,
-    label: `You are a highly skilled AI trained in language translation. I would like you to translate the text delimited by triple quotes into English language, ensuring that the translation is colloquial and authentic.
-    Only give me the output and nothing else. Do not wrap responses in quotes. `,
+    label: `Translate (To English)`,
     genPrompt: createGenPrompt({
       isTranslation: true,
       targetLanguage: 'English',
@@ -158,14 +165,6 @@ export const config = {
       message: `You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the text delimited by triple quotes and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points.
       Only give me the output and nothing else. Do not wrap responses in quotes. Text to perform task is given in triple quotes below:`,
       includeLanguagePrefix: true,
-    }),
-  },
-  improve: {
-    icon: <Magic style={{ ...commonStyle }} />,
-    label: 'Improve',
-    genPrompt: createGenPrompt({
-      message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes below and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience.
-        Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).`,
     }),
   },
   sentiment: {

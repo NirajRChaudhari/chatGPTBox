@@ -7,8 +7,9 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-import { ThreeDots } from 'react-bootstrap-icons'
+import { ThreeDots, CpuFill } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models } from '../../config/index.mjs'
+import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
@@ -21,6 +22,7 @@ function FloatingToolbar(props) {
   const [position, setPosition] = useState(getClientPosition(props.container))
   const [virtualPosition, setVirtualPosition] = useState({ x: 0, y: 0 })
   const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
+  const [modulePopupVisible, setModulePopupVisible] = useState(false) // New state for module popup visibility
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
 
@@ -52,6 +54,27 @@ function FloatingToolbar(props) {
   }, [])
 
   if (!render) return <div />
+
+  const toggleModulePopup = () => {
+    setModulePopupVisible(!modulePopupVisible)
+    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the module popup
+  }
+
+  // Toggle visibility of hidden tools
+  const toggleHiddenTools = () => {
+    setHiddenToolsVisible(!hiddenToolsVisible)
+    setModulePopupVisible(false) // Ensure the module popup is closed when opening the hidden tools
+  }
+
+  const handleModelChange = (modelName) => {
+    const newSession = {
+      ...session,
+      modelName,
+      aiName: Models[modelName].desc,
+    }
+    setSession(newSession)
+    setModulePopupVisible(false) // Close the popup after selection
+  }
 
   const handleToolClick = useCallback(
     async (toolConfig) => {
@@ -152,50 +175,58 @@ function FloatingToolbar(props) {
     const visibleTools = tools.slice(0, maxVisibleTools)
     const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
 
-    // Toggle visibility of hidden tools
-    const toggleHiddenTools = () => {
-      setHiddenToolsVisible(!hiddenToolsVisible)
-    }
-
     return (
       <div data-theme={config.themeMode}>
         <div className="chatgptbox-selection-toolbar">
-          {/* Model selection dropdown */}
-          <select
-            className="normal-button"
-            onChange={(e) => {
-              const modelName = e.target.value
-              const newSession = {
-                ...session,
-                modelName,
-                aiName: Models[modelName].desc,
-              }
-              setSession(newSession)
-            }}
-            value={session.modelName}
-          >
-            {config.activeApiModes.map((modelName) => {
-              let desc = modelName
-              if (modelName in Models) {
-                desc = `${t(Models[modelName].desc)}`
-              }
-              return (
-                <option key={modelName} value={modelName}>
-                  {desc}
-                </option>
-              )
-            })}
-          </select>
+          <div className="chatgptbox-selection-toolbar-button" onClick={toggleModulePopup}>
+            <CpuFill
+              size={22}
+              style={{
+                marginLeft: '4px',
+                marginRight: '3px',
+                color: 'goldenrod',
+                transition: 'color 0.3s ease', // Add transition for color change
+              }}
+              onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
+              onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
+            />{' '}
+            {/* CpuFill icon for model selection */}
+          </div>
 
           {visibleTools.map((tool, index) => (
-            <div key={index} className="chatgptbox-selection-toolbar-button" onClick={tool.onClick}>
+            <div
+              key={index}
+              className="chatgptbox-selection-toolbar-button"
+              onClick={tool.onClick}
+              data-tip={tool.label} // Set the tooltip text
+              data-for={`toolTooltip-${index}`} // Set a unique tooltip ID for each tool
+            >
               {tool.icon}
-              <span className="tool-label">{tool.label}</span>{' '}
-              {/* Add label to each visible tool */}
+              <ReactTooltip
+                id={`toolTooltip-${index}`}
+                place="bottom"
+                type="dark"
+                effect="solid"
+              />{' '}
+              {/* Define the tooltip */}
             </div>
           ))}
-          <div className="chatgptbox-selection-toolbar-button" onClick={toggleHiddenTools}>
-            <ThreeDots size={24} />
+          <div
+            className="chatgptbox-selection-toolbar-button"
+            style={{ height: '100%' }}
+            onClick={toggleHiddenTools}
+          >
+            <ThreeDots
+              size={22}
+              style={{
+                marginLeft: '4px',
+                marginRight: '3px',
+                color: 'goldenrod',
+                transition: 'color 0.3s ease', // Add transition for color change
+              }}
+              onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
+              onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
+            />
           </div>
           {hiddenToolsVisible && (
             <div className="chatgptbox-selection-toolbar-hidden-tools">
@@ -206,13 +237,31 @@ function FloatingToolbar(props) {
                   onClick={tool.onClick}
                 >
                   {tool.icon}
-                  <span className="tool-label">{tool.label}</span>{' '}
-                  {/* Add label to each hidden tool */}
+                  <span className="tool-label">{tool.label}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
+        {modulePopupVisible && (
+          <div className="chatgptbox-model-selection-popup">
+            {config.activeApiModes.map((modelName) => {
+              let desc = modelName
+              if (modelName in Models) {
+                desc = `${t(Models[modelName].desc)}`
+              }
+              return (
+                <div
+                  key={modelName}
+                  className="chatgptbox-model-selection-popup-item"
+                  onClick={() => handleModelChange(modelName)}
+                >
+                  {desc}
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     )
   }
