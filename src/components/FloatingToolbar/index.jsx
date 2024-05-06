@@ -7,7 +7,14 @@ import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '../../hooks/use-config.mjs'
-import { ThreeDots, CpuFill, ArrowRightCircleFill } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
+import {
+  ThreeDots,
+  CpuFill,
+  ArrowRightCircleFill,
+  ReplyAllFill,
+  JournalCode,
+  ChatLeftText,
+} from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 import { CopilotIcon } from '@primer/octicons-react'
@@ -27,6 +34,8 @@ function FloatingToolbar(props) {
   const [modulePopupVisible, setModulePopupVisible] = useState(false) // New state for module popup visibility
   const [askPopupVisible, setAskPopupVisible] = useState(false)
   const [askInputText, setAskInputText] = useState('')
+  const [replyOptionsVisible, setReplyOptionsVisible] = useState(false) // State to toggle reply options
+
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
 
@@ -61,6 +70,38 @@ function FloatingToolbar(props) {
 
   const toggleAskPopup = () => {
     setAskPopupVisible(!askPopupVisible)
+
+    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the ask popup
+    setModulePopupVisible(false) // Ensure the module popup is closed when opening the ask popup
+    setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the ask popup
+  }
+
+  const toggleAskSelection = () => {
+    setIncludeSelection(!includeSelection)
+  }
+
+  const toggleModulePopup = () => {
+    setModulePopupVisible(!modulePopupVisible)
+
+    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the module popup
+    setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the module popup
+    setAskPopupVisible(false) // Ensure the ask popup is closed when opening the module popup
+  }
+
+  const toggleHiddenTools = () => {
+    setHiddenToolsVisible(!hiddenToolsVisible)
+
+    setModulePopupVisible(false) // Ensure the module popup is closed when opening the hidden tools
+    setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the hidden tools
+    setAskPopupVisible(false) // Ensure the ask popup is closed when opening the hidden tools
+  }
+
+  const toggleReplyOptions = () => {
+    setReplyOptionsVisible(!replyOptionsVisible)
+
+    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the reply options
+    setModulePopupVisible(false) // Ensure the module popup is closed when opening the reply options
+    setAskPopupVisible(false) // Ensure the ask popup is closed when opening the reply options
   }
 
   const handleAskInputChange = (e) => {
@@ -92,16 +133,14 @@ function FloatingToolbar(props) {
         `"""`
     }
 
-    console.log(askPrompt)
+    // console.log(askPrompt)
 
     setPrompt(askPrompt)
     setTriggered(true)
     setAskInputText('')
     setAskPopupVisible(false)
   }
-  const toggleAskSelection = () => {
-    setIncludeSelection(!includeSelection)
-  }
+
   const handleAskTextareaInput = (event) => {
     const textarea = event.target
     textarea.style.height = 'auto' // Reset the height to recalculate
@@ -109,17 +148,6 @@ function FloatingToolbar(props) {
     if (textarea.scrollHeight >= 80) {
       textarea.style.height = '80px' // Cap the height at 80px
     }
-  }
-
-  const toggleModulePopup = () => {
-    setModulePopupVisible(!modulePopupVisible)
-    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the module popup
-  }
-
-  // Toggle visibility of hidden tools
-  const toggleHiddenTools = () => {
-    setHiddenToolsVisible(!hiddenToolsVisible)
-    setModulePopupVisible(false) // Ensure the module popup is closed when opening the hidden tools
   }
 
   const handleModelChange = (modelName) => {
@@ -142,6 +170,42 @@ function FloatingToolbar(props) {
     },
     [selection, props.container],
   )
+
+  const handleReplyAsEmail = () => {
+    const p = getClientPosition(props.container)
+    props.container.style.position = 'fixed'
+    setPosition(p)
+
+    let askPrompt =
+      `Act as Niraj, a software engineer, you have received an email which is delimited in triple quotes below. Please provide a detailed and professional reply to this email. Your response should not be enclosed in quotation marks. No filler or extra text. Match the language style of the received email and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive answer:
+     """` +
+      selection +
+      `"""`
+
+    console.log(askPrompt)
+
+    setPrompt(askPrompt)
+    setTriggered(true)
+    setReplyOptionsVisible(false)
+  }
+
+  const handleReplyAsChat = () => {
+    const p = getClientPosition(props.container)
+    props.container.style.position = 'fixed'
+    setPosition(p)
+
+    let askPrompt =
+      `As Niraj, a software engineer, you have been engaging in a conversation with another person. Please provide a detailed yet concise professional reply to the message shown below. The received message is delimited by triple quotes. The text may include a single message or a conversation involving multiple messages; in such cases, consider the context of the entire chat but respond only to the most recent message. Your response should not be enclosed in quotation marks and should avoid any filler or unnecessary text. Do not try to respond to each word in the received message. Match the language style of the received message and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive answer:
+     """` +
+      selection +
+      `"""`
+
+    console.log(askPrompt)
+
+    setPrompt(askPrompt)
+    setTriggered(true)
+    setReplyOptionsVisible(false)
+  }
 
   if (triggered) {
     const updatePosition = useCallback(() => {
@@ -317,6 +381,55 @@ function FloatingToolbar(props) {
               {/* Define the tooltip */}
             </div>
           ))}
+          {/* ReplyAllFill Button */}
+          <div className="chatgptbox-selection-toolbar-button" onClick={toggleReplyOptions}>
+            <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
+          </div>
+          {/* Conditional Rendering of Reply Options */}
+          {replyOptionsVisible && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '-35px',
+                right: '0',
+                transform: 'translateX(-40%)',
+                display: 'flex',
+                flexDirection: 'row',
+              }}
+            >
+              <div
+                className="chatgptbox-selection-toolbar-button"
+                data-tip="Reply as Email"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '5px',
+                  padding: '5px',
+                  transition: 'background-color 0.3s', // Adding transition for smooth effect
+                  ':hover': { backgroundColor: '#f0f0f0' }, // Inline hover effect
+                }}
+                onClick={handleReplyAsEmail}
+              >
+                <JournalCode size={22} />
+              </div>
+
+              <div
+                className="chatgptbox-selection-toolbar-button"
+                data-tip="Reply as Chat Message"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '5px',
+                  padding: '5px',
+                  marginLeft: '2px',
+                  transition: 'background-color 0.3s', // Adding transition for smooth effect
+                  ':hover': { backgroundColor: '#f0f0f0' }, // Inline hover effect
+                }}
+                onClick={handleReplyAsChat}
+              >
+                <ChatLeftText size={22} />
+              </div>
+            </div>
+          )}
+
           <div
             className="chatgptbox-selection-toolbar-button"
             style={{ height: '100%' }}
