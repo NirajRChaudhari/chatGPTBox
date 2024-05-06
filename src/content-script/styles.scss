@@ -1593,8 +1593,8 @@
   min-height: 40px;
   max-height: 80px; /* Set maximum height before scrolling */
   overflow-y: auto; /* Allows scrolling vertically */
-  border: none;
-  outline: none;
+  border: none !important;
+  outline: none !important;
   padding: 6px;
   font-size: 13px;
   resize: none; /* Disables resizing the textarea */

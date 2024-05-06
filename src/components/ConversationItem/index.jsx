@@ -35,15 +35,29 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
   const [collapsed, setCollapsed] = useState(false)
 
   const replaceTextInFocusedInput = () => {
-    if ((focusedInput && focusedInput.tagName === 'INPUT') || focusedInput.tagName === 'TEXTAREA') {
+    // Ensure the focused input exists and is either an INPUT or TEXTAREA
+    if (focusedInput && (focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA')) {
       const text = content
       const { selectionStart, selectionEnd } = focusedInput
+
+      // Decide whether to add a newline based on the element type
+      const replacementText = focusedInput.tagName === 'TEXTAREA' ? text + '\n' : text
+
+      // Replace the selected text with the new text, potentially including a newline
       focusedInput.value =
         focusedInput.value.substring(0, selectionStart) +
-        text +
+        replacementText +
         focusedInput.value.substring(selectionEnd)
+
+      // Refocus the input and set the cursor position right after the newly inserted text
       focusedInput.focus()
-      focusedInput.setSelectionRange(selectionStart, selectionStart + text.length)
+      const newCursorPos = selectionStart + replacementText.length
+      focusedInput.setSelectionRange(newCursorPos, newCursorPos)
+
+      // Assuming there's a UI element to close after replacement
+      if (document.querySelector('.chatgptbox-selection-window')) {
+        document.querySelector('.chatgptbox-selection-window').remove()
+      }
     }
   }
 
