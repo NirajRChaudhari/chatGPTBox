@@ -34,7 +34,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
   const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
 
-  const replaceTextInFocusedInput = () => {
+  const replaceTextInFocusedInput = async () => {
     if (
       focusedInput &&
       (focusedInput.tagName === 'INPUT' ||
@@ -58,8 +58,14 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
         const newCursorPos = selectionStart + replacementText.length
         focusedInput.setSelectionRange(newCursorPos, newCursorPos)
       } else if (focusedInput.getAttribute('contenteditable') == 'true') {
+        focusedInput.innerHTML = `<p>${replacementText}</p>`
         focusedInput.focus()
-        focusedInput.innerHTML = replacementText
+
+        // Emit input and change events on updating contenteditable element
+        const inputEvent = new Event('input', { bubbles: true })
+        focusedInput.dispatchEvent(inputEvent)
+        const changeEvent = new Event('change', { bubbles: true })
+        focusedInput.dispatchEvent(changeEvent)
       }
 
       // Assuming there's a UI element to close after replacement
