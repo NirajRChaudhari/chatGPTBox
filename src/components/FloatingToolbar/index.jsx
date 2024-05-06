@@ -12,9 +12,9 @@ import {
   CpuFill,
   ArrowRightCircleFill,
   ReplyAllFill,
-  JournalCode,
   ChatLeftText,
   ChevronBarDown,
+  EnvelopeAt,
 } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models, PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
@@ -109,18 +109,27 @@ function FloatingToolbar(props) {
     setReplyPopupVisible(false) // Ensure the reply popup is closed when opening the module popup
   }
 
-  const toggleHiddenTools = () => {
-    setHiddenToolsVisible(!hiddenToolsVisible)
+  const handleMouseEnterHiddenTools = () => {
+    if (hoverTimeout) clearTimeout(hoverTimeout)
+    setHiddenToolsVisible(true)
 
-    setModulePopupVisible(false) // Ensure the module popup is closed when opening the hidden tools
-    setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the hidden tools
-    setAskPopupVisible(false) // Ensure the ask popup is closed when opening the hidden tools
-    setReplyPopupVisible(false) // Ensure the reply popup is closed when opening the hidden tools
+    if (!replyPopupVisible) {
+      setReplyOptionsVisible(false)
+    }
+  }
+
+  const handleMouseLeaveHiddenTools = () => {
+    const timeout = setTimeout(() => {
+      setHiddenToolsVisible(false)
+    }, 1000)
+    setHoverTimeout(timeout)
   }
 
   const toggleReplyOptions = useCallback(() => {
     if (hoverTimeout) clearTimeout(hoverTimeout) // Clear any existing timeout
     setReplyOptionsVisible(true)
+
+    setHiddenToolsVisible(false)
   }, [hoverTimeout])
   const closeReplyOptions = useCallback(() => {
     // Set timeout to delay closing
@@ -473,6 +482,18 @@ function FloatingToolbar(props) {
                 </div>
               </div>
             )}
+            {/* ReplyAllFill Button */}
+            <div
+              className="chatgptbox-selection-toolbar-button"
+              onMouseEnter={toggleReplyOptions}
+              onMouseLeave={closeReplyOptions}
+              onClick={() => {
+                setReplyOptionsVisible(!replyOptionsVisible)
+                setReplyPopupVisible(false)
+              }}
+            >
+              <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
+            </div>
             {visibleTools.map((tool, index) => (
               <div
                 key={index}
@@ -491,20 +512,12 @@ function FloatingToolbar(props) {
                 {/* Define the tooltip */}
               </div>
             ))}
-            {/* ReplyAllFill Button */}
-            <div
-              className="chatgptbox-selection-toolbar-button"
-              onMouseEnter={toggleReplyOptions}
-              onMouseLeave={closeReplyOptions}
-            >
-              <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
-            </div>
             {/* Conditional Rendering of Reply Options */}
             {(replyOptionsVisible || replyPopupVisible) && (
               <div
                 onMouseEnter={handleReplyOptionsHover}
                 onMouseLeave={closeReplyOptions}
-                style={{ position: 'absolute', top: '-35px', right: '24px', display: 'flex' }}
+                style={{ position: 'absolute', top: '-35px', left: '55px', display: 'flex' }}
               >
                 <div
                   className="chatgptbox-selection-toolbar-button"
@@ -527,7 +540,7 @@ function FloatingToolbar(props) {
                     marginLeft: '4px',
                   }}
                 >
-                  <JournalCode size={22} />
+                  <EnvelopeAt size={22} />
                 </div>
               </div>
             )}
@@ -583,7 +596,8 @@ function FloatingToolbar(props) {
             <div
               className="chatgptbox-selection-toolbar-button"
               style={{ height: '100%' }}
-              onClick={toggleHiddenTools}
+              onMouseEnter={handleMouseEnterHiddenTools}
+              onMouseLeave={handleMouseLeaveHiddenTools}
             >
               <ThreeDots
                 size={22}
