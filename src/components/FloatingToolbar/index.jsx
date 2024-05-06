@@ -121,7 +121,7 @@ function FloatingToolbar(props) {
   const handleMouseLeaveHiddenTools = () => {
     const timeout = setTimeout(() => {
       setHiddenToolsVisible(false)
-    }, 1000)
+    }, 2000)
     setHoverTimeout(timeout)
   }
 
@@ -610,21 +610,21 @@ function FloatingToolbar(props) {
                 onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
                 onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
               />
+              {hiddenToolsVisible && (
+                <div className="chatgptbox-selection-toolbar-hidden-tools">
+                  {hiddenTools.map((tool, index) => (
+                    <div
+                      key={index}
+                      className="chatgptbox-selection-toolbar-button"
+                      onClick={tool.onClick}
+                    >
+                      {tool.icon}
+                      <span className="tool-label">{tool.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            {hiddenToolsVisible && (
-              <div className="chatgptbox-selection-toolbar-hidden-tools">
-                {hiddenTools.map((tool, index) => (
-                  <div
-                    key={index}
-                    className="chatgptbox-selection-toolbar-button"
-                    onClick={tool.onClick}
-                  >
-                    {tool.icon}
-                    <span className="tool-label">{tool.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Draggable handle bar */}
