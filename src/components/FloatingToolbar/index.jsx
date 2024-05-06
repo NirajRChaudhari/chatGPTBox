@@ -16,7 +16,7 @@ import {
   ChatLeftText,
   ChevronBarDown,
 } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
-import { Models } from '../../config/index.mjs'
+import { Models, PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 import { CopilotIcon } from '@primer/octicons-react'
 
@@ -222,40 +222,21 @@ function FloatingToolbar(props) {
     setPosition(p)
 
     let askPrompt =
-      `Perform the task independently of the preceding discussion and context. Act as Niraj, a software engineer. You have received an email, shown below in triple quotes. Please provide a detailed and professional reply to this email. Always reply as if you are Niraj. If a 'Email Reply Context' is provided, incorporate it into your response to ensure accuracy and relevance. If no additional context is provided, base your response solely on the content of the email. Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email, reply as if you are Niraj and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response:
+      `Perform the task independently of the preceding discussion and context. Act as ${PersonalChatGPTBoxConfig.full_name}, a software engineer. You have received an email, shown below in triple quotes. Please provide a detailed and professional reply to this email. Always reply as if you are ${PersonalChatGPTBoxConfig.first_name}. If a 'Email Reply Context' is provided, incorporate it into your response to ensure accuracy and relevance. If no additional context is provided, base your response solely on the content of the email. 
+
+      \n Extra information about ${PersonalChatGPTBoxConfig.full_name}'s background and context, it's just for reference if needed while replying. But 'Chat Reply Context' if provided will always be more important.
+      ${PersonalChatGPTBoxConfig.resume_content} 
+      
+      \n Instructions : 
+      Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response:
+
+      \n Prompt to Reply :
        """` +
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\nEmail Reply Context: ${replyContext}`
-        : '') +
-      `\n\n Extra information about Niraj's background and context, it's just for reference if needed while replying but 'Chat Reply Context' if provided will always be more important.
-        Technical Skills:
-        - Programming Languages: Java, Python, JavaScript, C++, C#, TypeScript
-        - Frameworks: Spring Boot, Django, .NET
-        - Frontend: Angular, HTML, CSS, ReactJS
-        - Databases: MySQL, MongoDB, Firebase, Redis, Oracle, PostgreSQL
-        - Technologies: GitHub, Jenkins, Docker, Kubernetes, Pytorch, XML, OpenCV, Kafka, AWS, Android, Google Cloud
-        
-        Experience:
-        - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Lab, reduced response latency by 18%, integrated a GBM machine learning model, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
-        - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, engaged in DevOps using Docker, Jenkins, and Spinnaker, and documented designs on Confluence.
-        - Software Engineer Intern at Proxel Solutions: Developed an Inventory Management and Analytics System, reduced manual processing by 35%, built Node.js backend, designed MySQL database schema, and utilized Git and Jira for version control and work management.
-        
-        Education:
-        - University of Southern California: M.Sc. in Computer Science, GPA: 3.95/4
-        - Savitribai Phule Pune University: B.Eng. in Computer Engineering, GPA: 9.4/10
-        
-        Projects:
-        - AI-based S4 Algorithm: Developed for detecting copy-move forgery, active from Aug 2022 to Apr 2024.
-        - Signora Air Signature Library Demo: Utilizes Angular, Node.js, MediaPipe AI, and OpenCV to create a digital signature platform that allows gesture-based air signatures for increased security and convenience.
-        - Event Horizon: A Node.js and Angular-based web application for event aggregation and search, featuring cross-platform capabilities and integration with ticket-selling APIs, hosted on Google Cloud.
-        - Roomic Android Application: A real-time Android app using GitHub, Java, and Firebase, designed to assist in finding apartments and roommates in new cities based on user preferences.
-        
-        Achievements:
-        - Published a research paper on CNN-based video forgery detection in the Scopus indexed Journal of Design Engineering, Toronto.
-        - Winner at the Smart India Hackathon for developing an early detection system for Sepsis using machine learning, solving a problem statement by GE Healthcare.
-        `
+        ? `\n Email Reply Context : ${replyContext}`
+        : '')
 
     console.log(askPrompt)
 
@@ -271,39 +252,23 @@ function FloatingToolbar(props) {
     setPosition(p)
 
     let askPrompt =
-      `Perform the task independently of the preceding discussion and context. Act as Niraj, a software engineer. You have been engaging in a conversation as shown below in triple quotes. Please provide a detailed yet concise professional reply to the most recent message in the conversation. Always reply as if you are Niraj. If 'Chat Reply Context' is provided, use this information to better understand the nuances of the conversation and tailor your response accordingly. If no 'Reply Context' is available, base your response solely on the content of the received message. Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Avoid filler or extra text. Do not attempt to respond to each word in the received message. Match the language style of the received message, reply as if you are Niraj and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response:
+      `Perform the task independently of the preceding discussion and context. Act as ${PersonalChatGPTBoxConfig.full_name}, a software engineer. You have been engaging in a conversation as shown below in triple quotes. Please provide a detailed yet concise professional reply to the most recent message in the conversation. Always reply as if you are ${PersonalChatGPTBoxConfig.first_name}. If 'Chat Reply Context' is provided, use this information to better understand the nuances of the conversation and tailor your response accordingly. If no 'Reply Context' is available, base your response solely on the content of the received message. 
+
+      \n Extra information about ${PersonalChatGPTBoxConfig.full_name}'s background and context, it's just for reference if needed while replying. But 'Chat Reply Context' if provided will always be more important.
+      ${PersonalChatGPTBoxConfig.resume_content}
+
+
+      \n Instructions : 
+      Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Avoid filler or extra text. Do not attempt to respond to each word in the received message. Match the language style of the received message, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response:
+
+      \n Prompt to Reply :
        """` +
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\nChat Reply Context: ${replyContext}`
+        ? `\n Chat Reply Context : ${replyContext}`
         : '') +
-      `\n\n Extra information about Niraj's background and context, it's just for reference if needed while replying but 'Chat Reply Context' if provided will always be more important.
-      Technical Skills:
-      - Programming Languages: Java, Python, JavaScript, C++, C#, TypeScript
-      - Frameworks: Spring Boot, Django, .NET
-      - Frontend: Angular, HTML, CSS, ReactJS
-      - Databases: MySQL, MongoDB, Firebase, Redis, Oracle, PostgreSQL
-      - Technologies: GitHub, Jenkins, Docker, Kubernetes, Pytorch, XML, OpenCV, Kafka, AWS, Android, Google Cloud
-      
-      Experience:
-      - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Lab, reduced response latency by 18%, integrated a GBM machine learning model, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
-      - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, engaged in DevOps using Docker, Jenkins, and Spinnaker, and documented designs on Confluence.
-      - Software Engineer Intern at Proxel Solutions: Developed an Inventory Management and Analytics System, reduced manual processing by 35%, built Node.js backend, designed MySQL database schema, and utilized Git and Jira for version control and work management.
-      
-      Education:
-      - University of Southern California: M.Sc. in Computer Science, GPA: 3.95/4
-      - Savitribai Phule Pune University: B.Eng. in Computer Engineering, GPA: 9.4/10
-      
-      Projects:
-      - AI-based S4 Algorithm: Developed for detecting copy-move forgery, active from Aug 2022 to Apr 2024.
-      - Signora Air Signature Library Demo: Utilizes Angular, Node.js, MediaPipe AI, and OpenCV to create a digital signature platform that allows gesture-based air signatures for increased security and convenience.
-      - Event Horizon: A Node.js and Angular-based web application for event aggregation and search, featuring cross-platform capabilities and integration with ticket-selling APIs, hosted on Google Cloud.
-      - Roomic Android Application: A real-time Android app using GitHub, Java, and Firebase, designed to assist in finding apartments and roommates in new cities based on user preferences.
-      
-      Achievements:
-      - Published a research paper on CNN-based video forgery detection in the Scopus indexed Journal of Design Engineering, Toronto.
-      - Winner at the Smart India Hackathon for developing an early detection system for Sepsis using machine learning, solving a problem statement by GE Healthcare.
+      `\n\n 
       `
 
     console.log(askPrompt)

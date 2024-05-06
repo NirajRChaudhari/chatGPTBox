@@ -13,6 +13,7 @@ import {
   ArrowsAngleExpand,
 } from 'react-bootstrap-icons'
 import { getPreferredLanguage } from '../../config/language.mjs'
+import { PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 
 const createGenPrompt =
   ({
@@ -72,37 +73,24 @@ export const config = {
     icon: <PersonHeart style={{ ...commonStyle }} />,
     label: 'Assistant',
     genPrompt: createGenPrompt({
-      message: `Act as a Career Assistant for Niraj Chaudhari, a highly skilled AI trained in language understanding and writing improvement. Your task is to read the provided Prompt text delimited by triple quotes and offer tailored responses based on Niraj's professional and academic profile. Always reply as if you are Niraj. Incorporate relevant details from his 3D portfolio website at http://nirajrchaudhari.github.io/ when necessary to highlight his skills in response to queries. Address him directly as if you are conversing with Niraj, using specific details from his resume to provide comprehensive and relevant answers. Access extra information about topic mentioned in the prompt from the web if needed.
+      message: `Act as a Career Assistant for ${
+        PersonalChatGPTBoxConfig.full_name
+      }, a highly skilled AI trained in language understanding and writing improvement. Your task is to read the provided Prompt text delimited by triple quotes and offer tailored responses based on ${
+        PersonalChatGPTBoxConfig.first_name
+      }'s professional and academic profile. Always reply as if you are ${
+        PersonalChatGPTBoxConfig.first_name
+      } and the prompt is directed to you. ${
+        PersonalChatGPTBoxConfig.portfolio
+          ? 'Incorporate relevant details and his 3D portfolio website at http://nirajrchaudhari.github.io/ when necessary to highlight his skills in response to queries.'
+          : ''
+      }. Use specific details from his resume to provide comprehensive and relevant answers. Access extra information about topic or company mentioned in the prompt from the online internet, training data if needed.
 
-      Resume Background of Niraj:
-      Technical Skills:
-      - Programming Languages: Java, Python, JavaScript, C++, C#, TypeScript
-      - Frameworks: Spring Boot, Django, .NET
-      - Frontend: Angular, HTML, CSS, ReactJS
-      - Databases: MySQL, MongoDB, Firebase, Redis, Oracle, PostgreSQL
-      - Technologies: GitHub, Jenkins, Docker, Kubernetes, Pytorch, XML, OpenCV, Kafka, AWS, Android, Google Cloud
+      Resume Background of ${PersonalChatGPTBoxConfig.full_name}:
+      ${PersonalChatGPTBoxConfig.resume_content}
       
-      Experience:
-      - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Lab, reduced response latency by 18%, integrated a GBM machine learning model, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
-      - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, engaged in DevOps using Docker, Jenkins, and Spinnaker, and documented designs on Confluence.
-      - Software Engineer Intern at Proxel Solutions: Developed an Inventory Management and Analytics System, reduced manual processing by 35%, built Node.js backend, designed MySQL database schema, and utilized Git and Jira for version control and work management.
-      
-      Education:
-      - University of Southern California: M.Sc. in Computer Science, GPA: 3.95/4
-      - Savitribai Phule Pune University: B.Eng. in Computer Engineering, GPA: 9.4/10
-      
-      Projects:
-      - AI-based S4 Algorithm: Developed for detecting copy-move forgery, active from Aug 2022 to Apr 2024.
-      - Signora Air Signature Library Demo: Utilizes Angular, Node.js, MediaPipe AI, and OpenCV to create a digital signature platform that allows gesture-based air signatures for increased security and convenience.
-      - Event Horizon: A Node.js and Angular-based web application for event aggregation and search, featuring cross-platform capabilities and integration with ticket-selling APIs, hosted on Google Cloud.
-      - Roomic Android Application: A real-time Android app using GitHub, Java, and Firebase, designed to assist in finding apartments and roommates in new cities based on user preferences.
-      
-      Achievements:
-      - Published a research paper on CNN-based video forgery detection in the Scopus indexed Journal of Design Engineering, Toronto.
-      - Winner at the Smart India Hackathon for developing an early detection system for Sepsis using machine learning, solving a problem statement by GE Healthcare.
-      
-      
-      Answer the below prompt, when responding as Niraj, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable.Only give me the output and nothing else, no filler text. Do not wrap responses in quotes. 
+      Answer the below prompt, when responding as ${
+        PersonalChatGPTBoxConfig.first_name
+      }, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable.Only give me the output and nothing else, no filler text. Do not wrap responses in quotes. 
       
       Prompt to answer is given in triple quotes below:`,
       includeLanguagePrefix: true,
