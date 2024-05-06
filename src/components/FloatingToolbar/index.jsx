@@ -14,6 +14,7 @@ import {
   ReplyAllFill,
   JournalCode,
   ChatLeftText,
+  ChevronBarDown,
 } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
@@ -586,21 +587,18 @@ function FloatingToolbar(props) {
             className="drag-handle"
             style={{
               cursor: 'move',
-              height: '12px',
-              fontSize: '10px !important',
-              background: 'white',
+              height: '16px',
               borderRadius: '2px',
-              border: '1px solid gray',
               position: 'absolute',
               left: '50%',
               bottom: '-15px',
               transform: 'translateX(-50%)',
-              width: '60px',
+              width: '30px',
               textAlign: 'center',
               zIndex: 1000,
             }}
           >
-            Drag
+            <ChevronBarDown size={22} />
           </div>
 
           {modulePopupVisible && (
