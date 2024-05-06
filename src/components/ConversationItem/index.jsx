@@ -110,7 +110,15 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                 <>
                   <TextareaT
                     onClick={replaceTextInFocusedInput}
-                    style={{ cursor: 'pointer', fontSize: '20px' }}
+                    style={{
+                      cursor: 'pointer',
+                      fontSize: '20px',
+                      backgroundColor:
+                        focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA'
+                          ? 'initial'
+                          : 'orange',
+                      borderRadius: '5px',
+                    }}
                     data-tip={t('Replace Text')}
                   />
                   <ReactTooltip />
