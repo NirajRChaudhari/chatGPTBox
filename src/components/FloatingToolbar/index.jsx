@@ -145,7 +145,11 @@ function FloatingToolbar(props) {
   }
 
   const handleAskKeyDown = async (event) => {
-    if ((event.shiftKey && event.key === 'Enter') || (event.ctrlKey && event.key === 'Enter')) {
+    if (
+      (event.shiftKey && event.key === 'Enter') ||
+      (event.ctrlKey && event.key === 'Enter') ||
+      (event.metaKey && event.key === 'Enter')
+    ) {
       event.stopPropagation()
       event.preventDefault()
       handleAskSendClick()
@@ -153,7 +157,11 @@ function FloatingToolbar(props) {
   }
 
   const handleReplyContextKeyDown = async (event) => {
-    if ((event.shiftKey && event.key === 'Enter') || (event.ctrlKey && event.key === 'Enter')) {
+    if (
+      (event.shiftKey && event.key === 'Enter') ||
+      (event.ctrlKey && event.key === 'Enter') ||
+      (event.metaKey && event.key === 'Enter')
+    ) {
       event.stopPropagation()
       event.preventDefault()
       executeReply()

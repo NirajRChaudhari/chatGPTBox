@@ -56,7 +56,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
         if (
           element.tagName === 'INPUT' ||
           element.tagName === 'TEXTAREA' ||
-          element.getAttribute('contenteditable') === 'true'
+          (element.getAttribute && element.getAttribute('contenteditable') === 'true')
         ) {
           editableElement = element
           break
