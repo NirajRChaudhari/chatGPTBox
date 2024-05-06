@@ -1521,6 +1521,10 @@
 
 /* Styling for the text part within the selected-text-display */
 .chatgptbox-ask-input-popup .selected-text-display .text-content {
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Firefox */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

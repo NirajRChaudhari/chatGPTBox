@@ -83,7 +83,7 @@ function FloatingToolbar(props) {
     if (includeSelection) {
       askPrompt = `Please thoroughly perform the suggested task below on the text. Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the same language (in other words don't change the language).
       - Task to perform: ${askInputText}
-      - Text on which to perform task : ${selection}
+      - Context on which to perform the task : ${selection}
       `
     } else {
       askPrompt =
@@ -251,7 +251,7 @@ function FloatingToolbar(props) {
           </div>
           <div
             className="chatgptbox-selection-toolbar-button"
-            style={{ height: '100%' }}
+            style={{ height: '100%', marginRight: '3px', marginLeft: '5px' }}
             onClick={toggleAskPopup}
           >
             <CopilotIcon
@@ -259,13 +259,16 @@ function FloatingToolbar(props) {
               style={{
                 paddingLeft: '6px',
                 paddingRight: '6px',
-                marginRight: '3px',
               }}
             />
           </div>
           {askPopupVisible && (
             <div className="chatgptbox-ask-input-popup">
-              <div className="selected-text-display">
+              <div
+                className="selected-text-display"
+                onClick={toggleAskSelection}
+                style={{ cursor: 'pointer' }}
+              >
                 <span className={`text-content ${includeSelection ? '' : 'text-dim'}`}>
                   {selection}
                 </span>
@@ -273,9 +276,11 @@ function FloatingToolbar(props) {
                   type="checkbox"
                   className="include-checkbox"
                   checked={includeSelection}
-                  onChange={toggleAskSelection}
+                  onChange={toggleAskSelection} // This now becomes redundant for clicks but is needed for keyboard accessibility
+                  style={{ pointerEvents: 'none' }} // Disables direct interaction with the checkbox, forcing use of the div's onClick
                 />
               </div>
+
               <hr className="divider" />
               <div className="input-with-icon">
                 <textarea
