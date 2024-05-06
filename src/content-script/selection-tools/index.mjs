@@ -92,7 +92,7 @@ export const config = {
         PersonalChatGPTBoxConfig.first_name
       }, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable.Only give me the output and nothing else, no filler text. Do not wrap responses in quotes. 
       
-      Prompt to answer is given in triple quotes below:`,
+      \n Prompt to Answer is given in triple quotes below:`,
       includeLanguagePrefix: true,
     }),
   },

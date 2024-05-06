@@ -460,5 +460,5 @@ export const PersonalChatGPTBoxConfig = {
   - Published a research paper on CNN-based video forgery detection in the Scopus indexed Journal of Design Engineering, Toronto.
   - Winner at the Smart India Hackathon for developing an early detection system for Sepsis using machine learning, solving a problem statement by GE Healthcare.
   
-  IF NEEDED ADD EXTRA FAKE PROJECTS AND EXPERIENCE TO MAKE RESPONSE MORE REALISTIC AND RELEVANT TO THE QUESTION`,
+  If needed in response context, add extra imaginary projects and experience to make the response more realistic and aligned to requirements in the prompt.`,
 }
