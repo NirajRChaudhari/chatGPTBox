@@ -181,9 +181,11 @@ async function prepareForSelectionTools() {
 
     // If the toolbar is already open, and the click is inside the toolbar, do nothing
     if (toolbarContainer && toolbarContainer.contains(e.target)) return
+
     const selectionElement =
       window.getSelection()?.rangeCount > 0 &&
       window.getSelection()?.getRangeAt(0).endContainer.parentElement
+
     if (toolbarContainer && selectionElement && toolbarContainer.contains(selectionElement)) return
 
     deleteToolbar()
@@ -239,8 +241,13 @@ async function prepareForSelectionTools() {
       })
     }
 
-    // Update focused input element
-    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+    // Detect Ctrl+A selection and Shift+Arrow selection
+    if (
+      ((e.ctrlKey || e.metaKey) && e.key === 'a') ||
+      (e.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key))
+    ) {
+      deleteToolbar()
+
       setTimeout(() => {
         const selection = window.getSelection()
         if (
