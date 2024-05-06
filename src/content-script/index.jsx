@@ -147,7 +147,11 @@ async function prepareForSelectionTools() {
     // Update focused input element
     const selection = window.getSelection()
     if (selection && selection.toString().length > 0) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      if (
+        e.target.tagName === 'INPUT' ||
+        e.target.tagName === 'TEXTAREA' ||
+        e.target.getAttribute('contenteditable') == 'true'
+      ) {
         focusedInput = e.target
       }
     }
@@ -172,7 +176,9 @@ async function prepareForSelectionTools() {
         const config = await getUserConfig()
         if (!config.selectionToolsNextToInputBox) position = { x: e.pageX + 20, y: e.pageY + 20 }
         else {
-          const inputElement = selectionElement.querySelector('input, textarea')
+          const inputElement = selectionElement.querySelector(
+            'input, textarea, [contenteditable="true"]',
+          )
           if (inputElement) {
             position = getClientPosition(inputElement)
             position = {
@@ -204,7 +210,9 @@ async function prepareForSelectionTools() {
     if (
       toolbarContainer &&
       !toolbarContainer.contains(e.target) &&
-      (e.target.nodeName === 'INPUT' || e.target.nodeName === 'TEXTAREA')
+      (e.target.nodeName === 'INPUT' ||
+        e.target.nodeName === 'TEXTAREA' ||
+        e.target.getAttribute('contenteditable') === 'true')
     ) {
       setTimeout(() => {
         if (!window.getSelection()?.toString().trim()) deleteToolbar()
@@ -218,9 +226,11 @@ async function prepareForSelectionTools() {
         if (
           selection.toString().length > 0 &&
           (document.activeElement.tagName === 'INPUT' ||
-            document.activeElement.tagName === 'TEXTAREA')
+            document.activeElement.tagName === 'TEXTAREA' ||
+            document.activeElement.getAttribute('contenteditable') === 'true')
         ) {
           focusedInput = document.activeElement
+
           // console.log('Ctrl+A selection detected in:', focusedInput)
 
           setTimeout(async () => {

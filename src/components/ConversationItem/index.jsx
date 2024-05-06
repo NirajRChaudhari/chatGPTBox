@@ -35,24 +35,32 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
   const [collapsed, setCollapsed] = useState(false)
 
   const replaceTextInFocusedInput = () => {
-    // Ensure the focused input exists and is either an INPUT or TEXTAREA
-    if (focusedInput && (focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA')) {
+    if (
+      focusedInput &&
+      (focusedInput.tagName === 'INPUT' ||
+        focusedInput.tagName === 'TEXTAREA' ||
+        focusedInput.getAttribute('contenteditable') == 'true')
+    ) {
       const text = content
-      const { selectionStart, selectionEnd } = focusedInput
+      const replacementText =
+        focusedInput.tagName === 'TEXTAREA' ||
+        focusedInput.getAttribute('contenteditable') == 'true'
+          ? text + '\n'
+          : text
 
-      // Decide whether to add a newline based on the element type
-      const replacementText = focusedInput.tagName === 'TEXTAREA' ? text + '\n' : text
-
-      // Replace the selected text with the new text, potentially including a newline
-      focusedInput.value =
-        focusedInput.value.substring(0, selectionStart) +
-        replacementText +
-        focusedInput.value.substring(selectionEnd)
-
-      // Refocus the input and set the cursor position right after the newly inserted text
-      focusedInput.focus()
-      const newCursorPos = selectionStart + replacementText.length
-      focusedInput.setSelectionRange(newCursorPos, newCursorPos)
+      if (focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA') {
+        const { selectionStart, selectionEnd } = focusedInput
+        focusedInput.value =
+          focusedInput.value.substring(0, selectionStart) +
+          replacementText +
+          focusedInput.value.substring(selectionEnd)
+        focusedInput.focus()
+        const newCursorPos = selectionStart + replacementText.length
+        focusedInput.setSelectionRange(newCursorPos, newCursorPos)
+      } else if (focusedInput.getAttribute('contenteditable') == 'true') {
+        focusedInput.focus()
+        focusedInput.innerHTML = replacementText
+      }
 
       // Assuming there's a UI element to close after replacement
       if (document.querySelector('.chatgptbox-selection-window')) {
