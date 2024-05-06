@@ -221,7 +221,7 @@ async function prepareForSelectionTools() {
             document.activeElement.tagName === 'TEXTAREA')
         ) {
           focusedInput = document.activeElement
-          console.log('Ctrl+A selection detected in:', focusedInput)
+          // console.log('Ctrl+A selection detected in:', focusedInput)
 
           setTimeout(async () => {
             const selection = window
@@ -232,8 +232,6 @@ async function prepareForSelectionTools() {
 
             if (selection) {
               let position = getClientPosition(focusedInput)
-
-              console.log(position, window.scrollX, focusedInput.offsetWidth, e.pageY)
 
               position = {
                 x: position.x + focusedInput.offsetWidth - 270,

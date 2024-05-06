@@ -292,8 +292,8 @@ export const defaultConfig = {
   chatgptArkoseReqParams: 'cgb=vhwi',
   selectionTools: [
     'explain',
-    'assistant',
     'fixError',
+    'assistant',
     'improve',
     'makeShorter',
     'makeLonger',
@@ -306,8 +306,8 @@ export const defaultConfig = {
   ],
   selectionToolsDesc: [
     'Explain',
-    'Assistant',
     'Fix Error',
+    'Assistant',
     'Improve Writing',
     'Make Shorter',
     'Make Longer',
