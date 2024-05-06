@@ -35,23 +35,6 @@ import NotificationForChatGPTWeb from '../components/NotificationForChatGPTWeb'
  */
 
 let focusedInput = null
-function setupFocusTracking() {
-  document.addEventListener('mouseup', (event) => {
-    const selection = window.getSelection()
-
-    if (selection && selection.toString().length > 0) {
-      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-        focusedInput = event.target
-      }
-    }
-  })
-
-  document.addEventListener('mousedown', () => {
-    if (focusedInput) {
-      focusedInput = null
-    }
-  })
-}
 
 let decisionCardRoot = null // We'll store our root here
 
@@ -161,6 +144,15 @@ const createSelectionTools = async (toolbarContainer, selection) => {
 
 async function prepareForSelectionTools() {
   document.addEventListener('mouseup', (e) => {
+    // Update focused input element
+    const selection = window.getSelection()
+    if (selection && selection.toString().length > 0) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        focusedInput = e.target
+      }
+    }
+
+    // If the toolbar is already open, and the click is inside the toolbar, do nothing
     if (toolbarContainer && toolbarContainer.contains(e.target)) return
     const selectionElement =
       window.getSelection()?.rangeCount > 0 &&
@@ -197,11 +189,18 @@ async function prepareForSelectionTools() {
     })
   })
   document.addEventListener('mousedown', (e) => {
+    // Update focused input element
+    if (focusedInput) {
+      focusedInput = null
+    }
+
+    // Delete toolbar if the user clicks outside of it
     if (toolbarContainer && toolbarContainer.contains(e.target)) return
 
     document.querySelectorAll('.chatgptbox-toolbar-container').forEach((e) => e.remove())
   })
   document.addEventListener('keydown', (e) => {
+    // Delete toolbar if the user is typing in an input or textarea
     if (
       toolbarContainer &&
       !toolbarContainer.contains(e.target) &&
@@ -210,6 +209,43 @@ async function prepareForSelectionTools() {
       setTimeout(() => {
         if (!window.getSelection()?.toString().trim()) deleteToolbar()
       })
+    }
+
+    // Update focused input element
+    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+      setTimeout(() => {
+        const selection = window.getSelection()
+        if (
+          selection.toString().length > 0 &&
+          (document.activeElement.tagName === 'INPUT' ||
+            document.activeElement.tagName === 'TEXTAREA')
+        ) {
+          focusedInput = document.activeElement
+          console.log('Ctrl+A selection detected in:', focusedInput)
+
+          setTimeout(async () => {
+            const selection = window
+              .getSelection()
+              ?.toString()
+              .trim()
+              .replace(/^-+|-+$/g, '')
+
+            if (selection) {
+              let position = getClientPosition(focusedInput)
+
+              console.log(position, window.scrollX, focusedInput.offsetWidth, e.pageY)
+
+              position = {
+                x: position.x + focusedInput.offsetWidth - 270,
+                y: position.y - 20,
+              }
+
+              toolbarContainer = createElementAtPosition(position.x, position.y)
+              await createSelectionTools(toolbarContainer, selection)
+            }
+          })
+        }
+      }, 100)
     }
   })
 }
@@ -399,8 +435,6 @@ async function run() {
 
   await overwriteAccessToken()
   await prepareForForegroundRequests()
-
-  setupFocusTracking()
 
   prepareForSelectionTools()
   prepareForSelectionToolsTouch()
