@@ -587,6 +587,7 @@ function FloatingToolbar(props) {
             style={{
               cursor: 'move',
               height: '12px',
+              fontSize: '10px !important',
               background: 'white',
               borderRadius: '2px',
               border: '1px solid gray',

@@ -261,7 +261,17 @@ export const defaultConfig = {
     'customModel',
     'azureOpenAi',
   ],
-  activeSelectionTools: ['improve', 'fixError', 'explain', 'makeShorter'],
+  activeSelectionTools: [
+    'improve',
+    'fixError',
+    'assistant',
+    'makeShorter',
+    'makeLonger',
+    'explain',
+    'summary',
+    'translate',
+    'code',
+  ],
   activeSiteAdapters: [
     'bilibili',
     'github',
