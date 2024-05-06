@@ -72,14 +72,14 @@ function FloatingToolbar(props) {
   }, [])
 
   useEffect(() => {
-    const textArea = document.querySelector('.reply-popup .popup-textarea')
+    const textArea = document.querySelector('.reply-popup .chat-box-popup-textarea')
     if (replyPopupVisible && textArea) {
       textArea.focus() // Focus the textarea
     }
   }, [replyPopupVisible])
 
   useEffect(() => {
-    const textArea = document.querySelector('.chatgptbox-ask-input-popup .popup-textarea')
+    const textArea = document.querySelector('.chatgptbox-ask-input-popup .chat-box-popup-textarea')
     if (askPopupVisible && textArea) {
       textArea.focus() // Focus the textarea
     }
@@ -145,14 +145,15 @@ function FloatingToolbar(props) {
   }
 
   const handleAskKeyDown = async (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if ((event.shiftKey && event.key === 'Enter') || (event.ctrlKey && event.key === 'Enter')) {
       event.stopPropagation()
       event.preventDefault()
       handleAskSendClick()
     }
   }
+
   const handleReplyContextKeyDown = async (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if ((event.shiftKey && event.key === 'Enter') || (event.ctrlKey && event.key === 'Enter')) {
       event.stopPropagation()
       event.preventDefault()
       executeReply()
@@ -186,12 +187,12 @@ function FloatingToolbar(props) {
     setAskPopupVisible(false)
   }
 
-  const handleAskTextareaInput = (event) => {
+  const handleTextareaHeightChange = (maxHeight) => (event) => {
     const textarea = event.target
     textarea.style.height = 'auto' // Reset the height to recalculate
     textarea.style.height = textarea.scrollHeight + 'px' // Set height based on scroll height
-    if (textarea.scrollHeight >= 80) {
-      textarea.style.height = '80px' // Cap the height at 80px
+    if (textarea.scrollHeight >= maxHeight) {
+      textarea.style.height = `${maxHeight}px` // Cap the height at maxHeight
     }
   }
 
@@ -451,9 +452,9 @@ function FloatingToolbar(props) {
                   <textarea
                     value={askInputText}
                     onChange={handleAskInputChange}
-                    onInput={handleAskTextareaInput}
+                    onInput={handleTextareaHeightChange(200)}
                     onKeyDown={handleAskKeyDown}
-                    className="popup-textarea"
+                    className="chat-box-popup-textarea"
                     placeholder="Type your question here..."
                   />
                   <ArrowRightCircleFill
@@ -527,8 +528,10 @@ function FloatingToolbar(props) {
                 className="input-with-icon reply-popup"
                 style={{
                   position: 'absolute',
-                  top: '-133px',
-                  right: '0px',
+                  top: '-155px',
+                  width: '350px',
+                  right: '-50px',
+                  left: 'auto',
                   backgroundColor: 'white',
                   padding: '5px',
                   borderRadius: '5px',
@@ -553,8 +556,9 @@ function FloatingToolbar(props) {
                   <textarea
                     value={replyContext}
                     onChange={handleReplyContextInputChange}
+                    onInput={handleTextareaHeightChange(300)}
                     onKeyDown={handleReplyContextKeyDown}
-                    className="popup-textarea"
+                    className="chat-box-popup-textarea"
                     placeholder="Add your reply context..."
                     style={{ flex: 1, marginRight: '10px' }} // Adjust size and margin between textarea and button
                   />
@@ -562,7 +566,7 @@ function FloatingToolbar(props) {
                     size={25}
                     onClick={executeReply}
                     className="send-icon"
-                    style={{ cursor: 'pointer', alignSelf: 'flex-start' }} // Adjust alignment to match textarea
+                    style={{ cursor: 'pointer', alignSelf: 'center' }} // Adjust alignment to match textarea
                   />
                 </div>
               </div>

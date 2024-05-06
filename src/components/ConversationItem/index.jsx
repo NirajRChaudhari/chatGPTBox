@@ -35,6 +35,14 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
   const [collapsed, setCollapsed] = useState(false)
 
   let findEditableElement = (target) => {
+    // List of classes of input that should not be focused
+    const excludedClasses = ['chat-box-popup-textarea']
+
+    // Check if the target is an excluded class
+    if (excludedClasses.some((excludedClass) => target.classList.contains(excludedClass))) {
+      return null
+    }
+
     // First, try to find the nearest editable ancestor using closest()
     let editableElement = target.closest('input, textarea, [contenteditable="true"]')
 

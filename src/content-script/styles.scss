@@ -1498,9 +1498,10 @@
   display: flex;
   flex-direction: column; /* Changes to column to stack the elements */
   position: absolute;
-  top: -115px; /* Adjust the position as needed */
-  right: 0;
-  left: 0;
+  width: 350px;
+  right: -50px;
+  left: auto;
+  top: -132px; /* Adjust the position as needed */
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -1590,17 +1591,18 @@
 }
 
 /* Textarea styling */
-.popup-textarea {
+.chat-box-popup-textarea {
   flex-grow: 1;
-  min-height: 60px;
-  max-height: 80px; /* Set maximum height before scrolling */
+  min-height: 80px;
+  max-height: 200px; /* Set maximum height before scrolling */
   overflow-y: auto; /* Allows scrolling vertically */
   border: none !important;
   outline: none !important;
   padding: 6px;
-  font-size: 13px;
+  font-size: 14px;
   resize: none; /* Disables resizing the textarea */
   box-sizing: border-box; /* Includes padding in the height calculation */
+  line-height: 1.5;
 }
 
 /* Styling for the send icon */

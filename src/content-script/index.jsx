@@ -1,5 +1,4 @@
 import './styles.scss'
-import { unmountComponentAtNode } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { render } from 'preact'
 import DecisionCard from '../components/DecisionCard'
@@ -64,25 +63,21 @@ async function mountComponent(siteConfig, userConfig) {
     }
   }
   document.querySelectorAll('.chatgptbox-container,#chatgptbox-container').forEach((e) => {
-    unmountComponentAtNode(e)
-    e.remove()
+    if (decisionCardRoot) {
+      decisionCardRoot.unmount() // Unmounting if there was a previous instance
+      e.remove()
+    }
   })
 
   let question
   if (userConfig.inputQuery) question = await getInput([userConfig.inputQuery])
   if (!question && siteConfig) question = await getInput(siteConfig.inputQuery)
 
-  document.querySelectorAll('.chatgptbox-container,#chatgptbox-container').forEach((e) => {
-    unmountComponentAtNode(e)
-    e.remove()
-  })
-
   const container = document.createElement('div')
   container.id = 'chatgptbox-container'
   if (decisionCardRoot) {
     decisionCardRoot.unmount() // Unmounting if there was a previous instance
   }
-
   decisionCardRoot = createRoot(container) // Create a root for the container
   decisionCardRoot.render(
     <DecisionCard
@@ -142,6 +137,18 @@ const createSelectionTools = async (toolbarContainer, selection) => {
   )
 }
 
+function checkIfExcludedElement(element) {
+  // List of classes of input that should not be focused
+  const excludedClasses = ['chat-box-popup-textarea']
+
+  // Check if the target is an excluded class
+  if (excludedClasses.some((excludedClass) => element.classList.contains(excludedClass))) {
+    return true
+  }
+
+  return false
+}
+
 function findEditableElement(target) {
   // First, try to find the nearest editable ancestor using closest()
   let editableElement = target.closest('input, textarea, [contenteditable="true"]')
@@ -171,6 +178,10 @@ function findEditableElement(target) {
 
 async function prepareForSelectionTools() {
   document.addEventListener('mouseup', (e) => {
+    if (checkIfExcludedElement(e.target)) {
+      return
+    }
+
     // Update focused input element
     const selection = window.getSelection()
     if (selection && selection.toString().length > 0) {
@@ -234,6 +245,10 @@ async function prepareForSelectionTools() {
     document.querySelectorAll('.chatgptbox-toolbar-container').forEach((e) => e.remove())
   })
   document.addEventListener('keydown', (e) => {
+    if (checkIfExcludedElement(e.target)) {
+      return
+    }
+
     // Delete toolbar if the user is typing in an input or textarea
     if (toolbarContainer && !toolbarContainer.contains(e.target) && findEditableElement(e.target)) {
       setTimeout(() => {
