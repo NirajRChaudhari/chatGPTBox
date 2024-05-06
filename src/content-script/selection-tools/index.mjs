@@ -29,6 +29,8 @@ const createGenPrompt =
       preferredLanguage = await getPreferredLanguage()
     }
 
+    message = 'Perform the task independently of the preceding discussion and context. ' + message
+
     let fullMessage = isTranslation
       ? `Translate the following into ${preferredLanguage} and only show me the translated content`
       : message
@@ -36,6 +38,9 @@ const createGenPrompt =
       fullMessage += `. If it is already in ${preferredLanguage}, translate it into English and only show me the translated content`
     }
     const prefix = includeLanguagePrefix ? `Reply in ${preferredLanguage}.` : ''
+
+    console.log(`${prefix}${fullMessage}:\n'''\n${selection}\n'''`)
+
     return `${prefix}${fullMessage}:\n'''\n${selection}\n'''`
   }
 
