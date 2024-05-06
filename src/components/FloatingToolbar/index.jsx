@@ -35,6 +35,10 @@ function FloatingToolbar(props) {
   const [askPopupVisible, setAskPopupVisible] = useState(false)
   const [askInputText, setAskInputText] = useState('')
   const [replyOptionsVisible, setReplyOptionsVisible] = useState(false) // State to toggle reply options
+  const [hoverTimeout, setHoverTimeout] = useState(null) // State to handle hover timeout
+  const [replyContext, setReplyContext] = useState('')
+  const [replyType, setReplyType] = useState(null) // 'email' or 'chat'
+  const [replyPopupVisible, setReplyPopupVisible] = useState(false)
 
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
@@ -74,6 +78,7 @@ function FloatingToolbar(props) {
     setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the ask popup
     setModulePopupVisible(false) // Ensure the module popup is closed when opening the ask popup
     setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the ask popup
+    setReplyPopupVisible(false) // Ensure the reply popup is closed when opening the ask popup
   }
 
   const toggleAskSelection = () => {
@@ -86,6 +91,7 @@ function FloatingToolbar(props) {
     setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the module popup
     setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the module popup
     setAskPopupVisible(false) // Ensure the ask popup is closed when opening the module popup
+    setReplyPopupVisible(false) // Ensure the reply popup is closed when opening the module popup
   }
 
   const toggleHiddenTools = () => {
@@ -94,19 +100,35 @@ function FloatingToolbar(props) {
     setModulePopupVisible(false) // Ensure the module popup is closed when opening the hidden tools
     setReplyOptionsVisible(false) // Ensure the reply options are closed when opening the hidden tools
     setAskPopupVisible(false) // Ensure the ask popup is closed when opening the hidden tools
+    setReplyPopupVisible(false) // Ensure the reply popup is closed when opening the hidden tools
   }
 
-  const toggleReplyOptions = () => {
-    setReplyOptionsVisible(!replyOptionsVisible)
+  const toggleReplyOptions = useCallback(() => {
+    if (hoverTimeout) clearTimeout(hoverTimeout) // Clear any existing timeout
+    setReplyOptionsVisible(true)
+  }, [hoverTimeout])
+  const closeReplyOptions = useCallback(() => {
+    // Set timeout to delay closing
+    const timeout = setTimeout(() => {
+      setReplyOptionsVisible(false)
+    }, 1000) // Delay by 1000 ms (1 second)
+    setHoverTimeout(timeout)
+  }, [])
 
-    setHiddenToolsVisible(false) // Ensure the hidden tools are closed when opening the reply options
-    setModulePopupVisible(false) // Ensure the module popup is closed when opening the reply options
-    setAskPopupVisible(false) // Ensure the ask popup is closed when opening the reply options
-  }
+  const handleReplyOptionsHover = useCallback(() => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout)
+      setHoverTimeout(null)
+    }
+  }, [hoverTimeout])
 
   const handleAskInputChange = (e) => {
     setAskInputText(e.target.value)
   }
+  const handleReplyContextInputChange = (e) => {
+    setReplyContext(e.target.value)
+  }
+
   const handleAskKeyDown = async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.stopPropagation()
@@ -114,6 +136,14 @@ function FloatingToolbar(props) {
       handleAskSendClick()
     }
   }
+  const handleReplyContextKeyDown = async (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.stopPropagation()
+      event.preventDefault()
+      executeReply()
+    }
+  }
+
   const handleAskSendClick = async () => {
     const p = getClientPosition(props.container)
     props.container.style.position = 'fixed'
@@ -180,13 +210,15 @@ function FloatingToolbar(props) {
       `Act as Niraj, a software engineer, you have received an email which is delimited in triple quotes below. Please provide a detailed and professional reply to this email. Your response should not be enclosed in quotation marks. No filler or extra text. Match the language style of the received email and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive answer:
      """` +
       selection +
-      `"""`
+      `"""` +
+      (replyContext ? `\n\nReply Context: ${replyContext}` : '')
 
     console.log(askPrompt)
 
     setPrompt(askPrompt)
     setTriggered(true)
     setReplyOptionsVisible(false)
+    setReplyContext('')
   }
 
   const handleReplyAsChat = () => {
@@ -195,17 +227,33 @@ function FloatingToolbar(props) {
     setPosition(p)
 
     let askPrompt =
-      `As Niraj, a software engineer, you have been engaging in a conversation with another person. Please provide a detailed yet concise professional reply to the message shown below. The received message is delimited by triple quotes. The text may include a single message or a conversation involving multiple messages; in such cases, consider the context of the entire chat but respond only to the most recent message. Your response should not be enclosed in quotation marks and should avoid any filler or unnecessary text. Do not try to respond to each word in the received message. Match the language style of the received message and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive answer:
+      `Act as Niraj, a software engineer, you have been engaging in a conversation with another person. Please provide a detailed yet concise professional reply to the message shown below. The received message is delimited by triple quotes. The text may include a single message or a conversation involving multiple messages; in such cases, consider the context of the entire chat but respond only to the most recent message. Your response should not be enclosed in quotation marks and should avoid any filler or unnecessary text. Do not try to respond to each word in the received message. Match the language style of the received message and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive answer:
      """` +
       selection +
-      `"""`
+      `"""` +
+      (replyContext ? `\n\nReply Context: ${replyContext}` : '')
 
     console.log(askPrompt)
 
     setPrompt(askPrompt)
     setTriggered(true)
     setReplyOptionsVisible(false)
+    setReplyContext('')
   }
+
+  const openReplyPopup = (type) => {
+    setReplyType(type)
+    setReplyPopupVisible(true)
+    setReplyOptionsVisible(false) // Close options after opening popup
+  }
+
+  const executeReply = useCallback(() => {
+    if (replyType === 'email') {
+      handleReplyAsEmail()
+    } else if (replyType === 'chat') {
+      handleReplyAsChat()
+    }
+  }, [replyType, handleReplyAsEmail, handleReplyAsChat])
 
   if (triggered) {
     const updatePosition = useCallback(() => {
@@ -276,7 +324,7 @@ function FloatingToolbar(props) {
     if (config.activeSelectionTools.length === 0) return <div />
 
     const tools = []
-    const maxVisibleTools = 4 // Maximum number of visible tools
+    const maxVisibleTools = 3 // Maximum number of visible tools
 
     for (const key in toolsConfig) {
       if (config.activeSelectionTools.includes(key)) {
@@ -344,7 +392,6 @@ function FloatingToolbar(props) {
                   style={{ pointerEvents: 'none' }} // Disables direct interaction with the checkbox, forcing use of the div's onClick
                 />
               </div>
-
               <hr className="divider" />
               <div className="input-with-icon">
                 <textarea
@@ -382,50 +429,83 @@ function FloatingToolbar(props) {
             </div>
           ))}
           {/* ReplyAllFill Button */}
-          <div className="chatgptbox-selection-toolbar-button" onClick={toggleReplyOptions}>
+          <div
+            className="chatgptbox-selection-toolbar-button"
+            onMouseEnter={toggleReplyOptions}
+            onMouseLeave={closeReplyOptions}
+          >
             <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
           </div>
           {/* Conditional Rendering of Reply Options */}
-          {replyOptionsVisible && (
+          {(replyOptionsVisible || replyPopupVisible) && (
             <div
-              style={{
-                position: 'absolute',
-                top: '-35px',
-                right: '0',
-                transform: 'translateX(-40%)',
-                display: 'flex',
-                flexDirection: 'row',
-              }}
+              onMouseEnter={handleReplyOptionsHover}
+              onMouseLeave={closeReplyOptions}
+              style={{ position: 'absolute', top: '-35px', right: '26px', display: 'flex' }}
             >
               <div
                 className="chatgptbox-selection-toolbar-button"
-                data-tip="Reply as Email"
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: '5px',
-                  padding: '5px',
-                  transition: 'background-color 0.3s', // Adding transition for smooth effect
-                  ':hover': { backgroundColor: '#f0f0f0' }, // Inline hover effect
-                }}
-                onClick={handleReplyAsEmail}
+                onClick={() => openReplyPopup('email')}
+                style={{ backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}
               >
                 <JournalCode size={22} />
               </div>
-
               <div
                 className="chatgptbox-selection-toolbar-button"
-                data-tip="Reply as Chat Message"
+                onClick={() => openReplyPopup('chat')}
                 style={{
                   backgroundColor: 'white',
-                  borderRadius: '5px',
                   padding: '5px',
-                  marginLeft: '2px',
-                  transition: 'background-color 0.3s', // Adding transition for smooth effect
-                  ':hover': { backgroundColor: '#f0f0f0' }, // Inline hover effect
+                  borderRadius: '5px',
+                  marginLeft: '4px',
                 }}
-                onClick={handleReplyAsChat}
               >
                 <ChatLeftText size={22} />
+              </div>
+            </div>
+          )}
+          {replyPopupVisible && (
+            <div
+              className="input-with-icon"
+              style={{
+                position: 'absolute',
+                top: '-133px',
+                right: '0px',
+                backgroundColor: 'white',
+                padding: '5px',
+                borderRadius: '5px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <div
+                style={{
+                  margin: '0px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  width: '100%',
+                }}
+              >
+                Reply as {replyType === 'email' ? 'Email' : 'Chat'}
+              </div>
+              <hr className="divider" style={{ width: '100%' }} />
+              <div style={{ display: 'flex', width: '100%' }}>
+                <textarea
+                  value={replyContext}
+                  onChange={handleReplyContextInputChange}
+                  onKeyDown={handleReplyContextKeyDown}
+                  className="popup-textarea"
+                  placeholder="Add your reply context..."
+                  style={{ flex: 1, marginRight: '10px' }} // Adjust size and margin between textarea and button
+                />
+                <ArrowRightCircleFill
+                  size={25}
+                  onClick={executeReply}
+                  className="send-icon"
+                  style={{ cursor: 'pointer', alignSelf: 'flex-start' }} // Adjust alignment to match textarea
+                />
               </div>
             </div>
           )}
