@@ -207,11 +207,13 @@ function FloatingToolbar(props) {
     setPosition(p)
 
     let askPrompt =
-      `Act as Niraj, a software engineer, you have received an email which is delimited in triple quotes below. Please provide a detailed and professional reply to this email. Your response should not be enclosed in quotation marks. No filler or extra text. Match the language style of the received email and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive answer:
-     """` +
+      `Act as Niraj, a software engineer. You have received an email, shown below in triple quotes. Please provide a detailed and professional reply to this email. If a 'Email Reply Context' is provided, incorporate it into your response to ensure accuracy and relevance. If no additional context is provided, base your response solely on the content of the email. Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive answer:
+       """` +
       selection +
       `"""` +
-      (replyContext ? `\n\nReply Context: ${replyContext}` : '')
+      (replyContext && replyContext.trim().length > 0
+        ? `\nEmail Reply Context: ${replyContext}`
+        : '')
 
     console.log(askPrompt)
 
@@ -227,11 +229,13 @@ function FloatingToolbar(props) {
     setPosition(p)
 
     let askPrompt =
-      `Act as Niraj, a software engineer, you have been engaging in a conversation with another person. Please provide a detailed yet concise professional reply to the message shown below. The received message is delimited by triple quotes. The text may include a single message or a conversation involving multiple messages; in such cases, consider the context of the entire chat but respond only to the most recent message. Your response should not be enclosed in quotation marks and should avoid any filler or unnecessary text. Do not try to respond to each word in the received message. Match the language style of the received message and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive answer:
-     """` +
+      `Act as Niraj, a software engineer. You have been engaging in a conversation as shown below in triple quotes. Please provide a detailed yet concise professional reply to the most recent message in the conversation. If 'Chat Reply Context' is provided, use this information to better understand the nuances of the conversation and tailor your response accordingly. If no 'Reply Context' is available, base your response solely on the content of the received message. Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Avoid filler or extra text. Do not attempt to respond to each word in the received message. Match the language style of the received message and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive answer:
+       """` +
       selection +
       `"""` +
-      (replyContext ? `\n\nReply Context: ${replyContext}` : '')
+      (replyContext && replyContext.trim().length > 0
+        ? `\nChat Reply Context: ${replyContext}`
+        : '')
 
     console.log(askPrompt)
 
@@ -445,14 +449,18 @@ function FloatingToolbar(props) {
             >
               <div
                 className="chatgptbox-selection-toolbar-button"
-                onClick={() => openReplyPopup('email')}
-                style={{ backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}
+                onClick={() => openReplyPopup('chat')}
+                style={{
+                  backgroundColor: 'white',
+                  padding: '5px',
+                  borderRadius: '5px',
+                }}
               >
-                <JournalCode size={22} />
+                <ChatLeftText size={22} />
               </div>
               <div
                 className="chatgptbox-selection-toolbar-button"
-                onClick={() => openReplyPopup('chat')}
+                onClick={() => openReplyPopup('email')}
                 style={{
                   backgroundColor: 'white',
                   padding: '5px',
@@ -460,7 +468,7 @@ function FloatingToolbar(props) {
                   marginLeft: '4px',
                 }}
               >
-                <ChatLeftText size={22} />
+                <JournalCode size={22} />
               </div>
             </div>
           )}
