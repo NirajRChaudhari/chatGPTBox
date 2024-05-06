@@ -34,19 +34,36 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
   const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
 
+  let findEditableElement = (target) => {
+    // First, try to find the nearest editable ancestor using closest()
+    let editableElement = target.closest('input, textarea, [contenteditable="true"]')
+
+    // If closest() doesn't find anything, perform a manual traversal as a fallback
+    if (!editableElement) {
+      let element = target
+      let depth = 0 // Initialize counter to track depth of traversal
+
+      while (element && element !== document.body && depth < 10) {
+        // Limit traversal to 10 levels
+        if (
+          element.tagName === 'INPUT' ||
+          element.tagName === 'TEXTAREA' ||
+          element.getAttribute('contenteditable') === 'true'
+        ) {
+          editableElement = element
+          break
+        }
+        element = element.parentNode
+        depth++ // Increment the counter with each loop iteration
+      }
+    }
+
+    return editableElement
+  }
+
   const replaceTextInFocusedInput = async () => {
-    if (
-      focusedInput &&
-      (focusedInput.tagName === 'INPUT' ||
-        focusedInput.tagName === 'TEXTAREA' ||
-        focusedInput.getAttribute('contenteditable') == 'true')
-    ) {
-      const text = content
-      const replacementText =
-        focusedInput.tagName === 'TEXTAREA' ||
-        focusedInput.getAttribute('contenteditable') == 'true'
-          ? text + '\n'
-          : text
+    if (focusedInput && findEditableElement(focusedInput)) {
+      const replacementText = focusedInput.tagName != 'INPUT' ? content + '\n' : content
 
       if (focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA') {
         const { selectionStart, selectionEnd } = focusedInput
@@ -57,7 +74,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
         focusedInput.focus()
         const newCursorPos = selectionStart + replacementText.length
         focusedInput.setSelectionRange(newCursorPos, newCursorPos)
-      } else if (focusedInput.getAttribute('contenteditable') == 'true') {
+      } else {
         focusedInput.innerHTML = `<p>${replacementText}</p>`
         focusedInput.focus()
 

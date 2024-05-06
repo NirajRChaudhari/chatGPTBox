@@ -142,16 +142,39 @@ const createSelectionTools = async (toolbarContainer, selection) => {
   )
 }
 
+function findEditableElement(target) {
+  // First, try to find the nearest editable ancestor using closest()
+  let editableElement = target.closest('input, textarea, [contenteditable="true"]')
+
+  // If closest() doesn't find anything, perform a manual traversal as a fallback
+  if (!editableElement) {
+    let element = target
+    let depth = 0 // Initialize counter to track depth of traversal
+
+    while (element && element !== document.body && depth < 10) {
+      // Limit traversal to 10 levels
+      if (
+        element.tagName === 'INPUT' ||
+        element.tagName === 'TEXTAREA' ||
+        element.getAttribute('contenteditable') === 'true'
+      ) {
+        editableElement = element
+        break
+      }
+      element = element.parentNode
+      depth++ // Increment the counter with each loop iteration
+    }
+  }
+
+  return editableElement
+}
+
 async function prepareForSelectionTools() {
   document.addEventListener('mouseup', (e) => {
     // Update focused input element
     const selection = window.getSelection()
     if (selection && selection.toString().length > 0) {
-      if (
-        e.target.tagName === 'INPUT' ||
-        e.target.tagName === 'TEXTAREA' ||
-        e.target.getAttribute('contenteditable') == 'true'
-      ) {
+      if (findEditableElement(e.target)) {
         focusedInput = e.target
       }
     }
@@ -176,9 +199,12 @@ async function prepareForSelectionTools() {
         const config = await getUserConfig()
         if (!config.selectionToolsNextToInputBox) position = { x: e.pageX + 20, y: e.pageY + 20 }
         else {
-          const inputElement = selectionElement.querySelector(
-            'input, textarea, [contenteditable="true"]',
-          )
+          let inputElement = null
+
+          if (selectionElement && findEditableElement(selectionElement)) {
+            inputElement = selectionElement
+          }
+
           if (inputElement) {
             position = getClientPosition(inputElement)
             position = {
@@ -207,13 +233,7 @@ async function prepareForSelectionTools() {
   })
   document.addEventListener('keydown', (e) => {
     // Delete toolbar if the user is typing in an input or textarea
-    if (
-      toolbarContainer &&
-      !toolbarContainer.contains(e.target) &&
-      (e.target.nodeName === 'INPUT' ||
-        e.target.nodeName === 'TEXTAREA' ||
-        e.target.getAttribute('contenteditable') === 'true')
-    ) {
+    if (toolbarContainer && !toolbarContainer.contains(e.target) && findEditableElement(e.target)) {
       setTimeout(() => {
         if (!window.getSelection()?.toString().trim()) deleteToolbar()
       })
@@ -225,9 +245,8 @@ async function prepareForSelectionTools() {
         const selection = window.getSelection()
         if (
           selection.toString().length > 0 &&
-          (document.activeElement.tagName === 'INPUT' ||
-            document.activeElement.tagName === 'TEXTAREA' ||
-            document.activeElement.getAttribute('contenteditable') === 'true')
+          document.activeElement &&
+          findEditableElement(document.activeElement)
         ) {
           focusedInput = document.activeElement
 
