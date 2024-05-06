@@ -70,6 +70,20 @@ function FloatingToolbar(props) {
     }
   }, [])
 
+  useEffect(() => {
+    const textArea = document.querySelector('.reply-popup .popup-textarea')
+    if (replyPopupVisible && textArea) {
+      textArea.focus() // Focus the textarea
+    }
+  }, [replyPopupVisible])
+
+  useEffect(() => {
+    const textArea = document.querySelector('.chatgptbox-ask-input-popup .popup-textarea')
+    if (askPopupVisible && textArea) {
+      textArea.focus() // Focus the textarea
+    }
+  }, [askPopupVisible])
+
   if (!render) return <div />
 
   const toggleAskPopup = () => {
@@ -348,228 +362,267 @@ function FloatingToolbar(props) {
     const visibleTools = tools.slice(0, maxVisibleTools)
     const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
 
-    return (
-      <div data-theme={config.themeMode}>
-        <div className="chatgptbox-selection-toolbar">
-          <div className="chatgptbox-selection-toolbar-button" onClick={toggleModulePopup}>
-            <CpuFill
-              size={22}
-              style={{
-                marginLeft: '4px',
-                marginRight: '3px',
-                color: 'goldenrod',
-                transition: 'color 0.2s ease', // Add transition for color change
-              }}
-              onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
-              onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
-            />{' '}
-            {/* CpuFill icon for model selection */}
-          </div>
-          <div
-            className="chatgptbox-selection-toolbar-button"
-            style={{ height: '100%', marginRight: '3px', marginLeft: '5px' }}
-            onClick={toggleAskPopup}
-          >
-            <CopilotIcon
-              size={19}
-              style={{
-                paddingLeft: '6px',
-                paddingRight: '6px',
-              }}
-            />
-          </div>
-          {askPopupVisible && (
-            <div className="chatgptbox-ask-input-popup">
-              <div
-                className="selected-text-display"
-                onClick={toggleAskSelection}
-                style={{ cursor: 'pointer' }}
-              >
-                <span className={`text-content ${includeSelection ? '' : 'text-dim'}`}>
-                  {selection}
-                </span>
-                <input
-                  type="checkbox"
-                  className="include-checkbox"
-                  checked={includeSelection}
-                  onChange={toggleAskSelection} // This now becomes redundant for clicks but is needed for keyboard accessibility
-                  style={{ pointerEvents: 'none' }} // Disables direct interaction with the checkbox, forcing use of the div's onClick
-                />
-              </div>
-              <hr className="divider" />
-              <div className="input-with-icon">
-                <textarea
-                  value={askInputText}
-                  onChange={handleAskInputChange}
-                  onInput={handleAskTextareaInput}
-                  onKeyDown={handleAskKeyDown}
-                  className="popup-textarea"
-                  placeholder="Type your question here..."
-                />
-                <ArrowRightCircleFill
-                  size={25}
-                  onClick={handleAskSendClick}
-                  className="send-icon"
-                />
-              </div>
-            </div>
-          )}
-          {visibleTools.map((tool, index) => (
-            <div
-              key={index}
-              className="chatgptbox-selection-toolbar-button"
-              onClick={tool.onClick}
-              data-tip={tool.label} // Set the tooltip text
-              data-for={`toolTooltip-${index}`} // Set a unique tooltip ID for each tool
-            >
-              {tool.icon}
-              <ReactTooltip
-                id={`toolTooltip-${index}`}
-                place="bottom"
-                type="dark"
-                effect="solid"
-              />{' '}
-              {/* Define the tooltip */}
-            </div>
-          ))}
-          {/* ReplyAllFill Button */}
-          <div
-            className="chatgptbox-selection-toolbar-button"
-            onMouseEnter={toggleReplyOptions}
-            onMouseLeave={closeReplyOptions}
-          >
-            <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
-          </div>
-          {/* Conditional Rendering of Reply Options */}
-          {(replyOptionsVisible || replyPopupVisible) && (
-            <div
-              onMouseEnter={handleReplyOptionsHover}
-              onMouseLeave={closeReplyOptions}
-              style={{ position: 'absolute', top: '-35px', right: '26px', display: 'flex' }}
-            >
-              <div
-                className="chatgptbox-selection-toolbar-button"
-                onClick={() => openReplyPopup('chat')}
-                style={{
-                  backgroundColor: 'white',
-                  padding: '5px',
-                  borderRadius: '5px',
-                }}
-              >
-                <ChatLeftText size={22} />
-              </div>
-              <div
-                className="chatgptbox-selection-toolbar-button"
-                onClick={() => openReplyPopup('email')}
-                style={{
-                  backgroundColor: 'white',
-                  padding: '5px',
-                  borderRadius: '5px',
-                  marginLeft: '4px',
-                }}
-              >
-                <JournalCode size={22} />
-              </div>
-            </div>
-          )}
-          {replyPopupVisible && (
-            <div
-              className="input-with-icon"
-              style={{
-                position: 'absolute',
-                top: '-133px',
-                right: '0px',
-                backgroundColor: 'white',
-                padding: '5px',
-                borderRadius: '5px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <div
-                style={{
-                  margin: '0px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  width: '100%',
-                }}
-              >
-                Reply as {replyType === 'email' ? 'Email' : 'Chat'}
-              </div>
-              <hr className="divider" style={{ width: '100%' }} />
-              <div style={{ display: 'flex', width: '100%' }}>
-                <textarea
-                  value={replyContext}
-                  onChange={handleReplyContextInputChange}
-                  onKeyDown={handleReplyContextKeyDown}
-                  className="popup-textarea"
-                  placeholder="Add your reply context..."
-                  style={{ flex: 1, marginRight: '10px' }} // Adjust size and margin between textarea and button
-                />
-                <ArrowRightCircleFill
-                  size={25}
-                  onClick={executeReply}
-                  className="send-icon"
-                  style={{ cursor: 'pointer', alignSelf: 'flex-start' }} // Adjust alignment to match textarea
-                />
-              </div>
-            </div>
-          )}
+    const dragEvent = {
+      onDrag: (e, ui) => {
+        setVirtualPosition({ x: virtualPosition.x + ui.deltaX, y: virtualPosition.y + ui.deltaY })
+      },
+      onStop: () => {
+        setPosition({ x: position.x + virtualPosition.x, y: position.y + virtualPosition.y })
+        // setVirtualPosition({ x: 0, y: 0 })
+      },
+    }
 
-          <div
-            className="chatgptbox-selection-toolbar-button"
-            style={{ height: '100%' }}
-            onClick={toggleHiddenTools}
-          >
-            <ThreeDots
-              size={22}
-              style={{
-                marginLeft: '4px',
-                marginRight: '3px',
-                color: 'goldenrod',
-                transition: 'color 0.2s ease', // Add transition for color change
-              }}
-              onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
-              onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
-            />
-          </div>
-          {hiddenToolsVisible && (
-            <div className="chatgptbox-selection-toolbar-hidden-tools">
-              {hiddenTools.map((tool, index) => (
+    return (
+      <Draggable
+        handle=".drag-handle"
+        position={virtualPosition}
+        onDrag={dragEvent.onDrag}
+        onStop={dragEvent.onStop}
+      >
+        <div data-theme={config.themeMode}>
+          <div className="chatgptbox-selection-toolbar">
+            <div className="chatgptbox-selection-toolbar-button" onClick={toggleModulePopup}>
+              <CpuFill
+                size={22}
+                style={{
+                  marginLeft: '4px',
+                  marginRight: '3px',
+                  color: 'goldenrod',
+                  transition: 'color 0.2s ease', // Add transition for color change
+                }}
+                onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
+                onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
+              />{' '}
+              {/* CpuFill icon for model selection */}
+            </div>
+            <div
+              className="chatgptbox-selection-toolbar-button"
+              style={{ height: '100%', marginRight: '3px', marginLeft: '5px' }}
+              onClick={toggleAskPopup}
+            >
+              <CopilotIcon
+                size={19}
+                style={{
+                  paddingLeft: '6px',
+                  paddingRight: '6px',
+                }}
+              />
+            </div>
+            {askPopupVisible && (
+              <div className="chatgptbox-ask-input-popup">
                 <div
-                  key={index}
-                  className="chatgptbox-selection-toolbar-button"
-                  onClick={tool.onClick}
+                  className="selected-text-display"
+                  onClick={toggleAskSelection}
+                  style={{ cursor: 'pointer' }}
                 >
-                  {tool.icon}
-                  <span className="tool-label">{tool.label}</span>
+                  <span className={`text-content ${includeSelection ? '' : 'text-dim'}`}>
+                    {selection}
+                  </span>
+                  <input
+                    type="checkbox"
+                    className="include-checkbox"
+                    checked={includeSelection}
+                    onChange={toggleAskSelection} // This now becomes redundant for clicks but is needed for keyboard accessibility
+                    style={{ pointerEvents: 'none' }} // Disables direct interaction with the checkbox, forcing use of the div's onClick
+                  />
                 </div>
-              ))}
+                <hr className="divider" />
+                <div className="input-with-icon">
+                  <textarea
+                    value={askInputText}
+                    onChange={handleAskInputChange}
+                    onInput={handleAskTextareaInput}
+                    onKeyDown={handleAskKeyDown}
+                    className="popup-textarea"
+                    placeholder="Type your question here..."
+                  />
+                  <ArrowRightCircleFill
+                    size={25}
+                    onClick={handleAskSendClick}
+                    className="send-icon"
+                  />
+                </div>
+              </div>
+            )}
+            {visibleTools.map((tool, index) => (
+              <div
+                key={index}
+                className="chatgptbox-selection-toolbar-button"
+                onClick={tool.onClick}
+                data-tip={tool.label} // Set the tooltip text
+                data-for={`toolTooltip-${index}`} // Set a unique tooltip ID for each tool
+              >
+                {tool.icon}
+                <ReactTooltip
+                  id={`toolTooltip-${index}`}
+                  place="bottom"
+                  type="dark"
+                  effect="solid"
+                />{' '}
+                {/* Define the tooltip */}
+              </div>
+            ))}
+            {/* ReplyAllFill Button */}
+            <div
+              className="chatgptbox-selection-toolbar-button"
+              onMouseEnter={toggleReplyOptions}
+              onMouseLeave={closeReplyOptions}
+            >
+              <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
+            </div>
+            {/* Conditional Rendering of Reply Options */}
+            {(replyOptionsVisible || replyPopupVisible) && (
+              <div
+                onMouseEnter={handleReplyOptionsHover}
+                onMouseLeave={closeReplyOptions}
+                style={{ position: 'absolute', top: '-35px', right: '24px', display: 'flex' }}
+              >
+                <div
+                  className="chatgptbox-selection-toolbar-button"
+                  onClick={() => openReplyPopup('chat')}
+                  style={{
+                    backgroundColor: 'white',
+                    padding: '5px',
+                    borderRadius: '5px',
+                  }}
+                >
+                  <ChatLeftText size={22} />
+                </div>
+                <div
+                  className="chatgptbox-selection-toolbar-button"
+                  onClick={() => openReplyPopup('email')}
+                  style={{
+                    backgroundColor: 'white',
+                    padding: '5px',
+                    borderRadius: '5px',
+                    marginLeft: '4px',
+                  }}
+                >
+                  <JournalCode size={22} />
+                </div>
+              </div>
+            )}
+            {replyPopupVisible && (
+              <div
+                className="input-with-icon reply-popup"
+                style={{
+                  position: 'absolute',
+                  top: '-133px',
+                  right: '0px',
+                  backgroundColor: 'white',
+                  padding: '5px',
+                  borderRadius: '5px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    margin: '0px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    width: '100%',
+                  }}
+                >
+                  Reply as {replyType === 'email' ? 'Email' : 'Chat'}
+                </div>
+                <hr className="divider" style={{ width: '100%' }} />
+                <div style={{ display: 'flex', width: '100%' }}>
+                  <textarea
+                    value={replyContext}
+                    onChange={handleReplyContextInputChange}
+                    onKeyDown={handleReplyContextKeyDown}
+                    className="popup-textarea"
+                    placeholder="Add your reply context..."
+                    style={{ flex: 1, marginRight: '10px' }} // Adjust size and margin between textarea and button
+                  />
+                  <ArrowRightCircleFill
+                    size={25}
+                    onClick={executeReply}
+                    className="send-icon"
+                    style={{ cursor: 'pointer', alignSelf: 'flex-start' }} // Adjust alignment to match textarea
+                  />
+                </div>
+              </div>
+            )}
+
+            <div
+              className="chatgptbox-selection-toolbar-button"
+              style={{ height: '100%' }}
+              onClick={toggleHiddenTools}
+            >
+              <ThreeDots
+                size={22}
+                style={{
+                  marginLeft: '4px',
+                  marginRight: '3px',
+                  color: 'goldenrod',
+                  transition: 'color 0.2s ease', // Add transition for color change
+                }}
+                onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
+                onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
+              />
+            </div>
+            {hiddenToolsVisible && (
+              <div className="chatgptbox-selection-toolbar-hidden-tools">
+                {hiddenTools.map((tool, index) => (
+                  <div
+                    key={index}
+                    className="chatgptbox-selection-toolbar-button"
+                    onClick={tool.onClick}
+                  >
+                    {tool.icon}
+                    <span className="tool-label">{tool.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Draggable handle bar */}
+          <div
+            className="drag-handle"
+            style={{
+              cursor: 'move',
+              height: '12px',
+              background: 'white',
+              borderRadius: '2px',
+              border: '1px solid gray',
+              position: 'absolute',
+              left: '50%',
+              bottom: '-15px',
+              transform: 'translateX(-50%)',
+              width: '60px',
+              textAlign: 'center',
+              zIndex: 1000,
+            }}
+          >
+            Drag
+          </div>
+
+          {modulePopupVisible && (
+            <div className="chatgptbox-model-selection-popup">
+              {config.activeApiModes.map((modelName) => {
+                let desc = modelName
+                if (modelName in Models) {
+                  desc = `${t(Models[modelName].desc)}`
+                }
+                return (
+                  <div
+                    key={modelName}
+                    className="chatgptbox-model-selection-popup-item"
+                    onClick={() => handleModelChange(modelName)}
+                  >
+                    {desc}
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
-        {modulePopupVisible && (
-          <div className="chatgptbox-model-selection-popup">
-            {config.activeApiModes.map((modelName) => {
-              let desc = modelName
-              if (modelName in Models) {
-                desc = `${t(Models[modelName].desc)}`
-              }
-              return (
-                <div
-                  key={modelName}
-                  className="chatgptbox-model-selection-popup-item"
-                  onClick={() => handleModelChange(modelName)}
-                >
-                  {desc}
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
+      </Draggable>
     )
   }
 }

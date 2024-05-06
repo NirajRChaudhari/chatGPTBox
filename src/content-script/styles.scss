@@ -1426,13 +1426,13 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: calc(100% + 5px); /* Positioned below the CpuFill icon button */
+  top: calc(100% + 3px); /* Positioned below the CpuFill icon button */
   left: 0;
   background-color: var(--theme-color);
   border-radius: 8px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   padding: 5px;
-  z-index: 1000;
+  z-index: 2000;
   max-height: 200px;
   overflow-y: auto;
   width: auto; /* Adjust width as needed */
@@ -1456,12 +1456,13 @@
   display: flex;
   flex-direction: column; /* Show hidden tools in a vertical list */
   position: absolute; /* Position the hidden tools absolutely */
-  top: calc(100% + 5px); /* Position the hidden tools below the toolbar */
+  top: calc(100% + 3px); /* Position the hidden tools below the toolbar */
   right: 0; /* Align the hidden tools with the left edge of the toolbar */
   background-color: var(--theme-color); /* Match toolbar background */
   border-radius: 8px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   padding: 5px; /* Add padding for the hidden tools */
+  z-index: 2000; /* Ensure the hidden tools are above other elements */
 }
 
 .chatgptbox-selection-toolbar-button {
