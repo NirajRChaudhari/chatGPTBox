@@ -216,9 +216,18 @@ async function prepareForSelectionTools() {
       focusedInput = null
     }
 
-    // Delete toolbar if the user clicks outside of it
     if (toolbarContainer && toolbarContainer.contains(e.target)) return
 
+    console.log(toolbarContainer, e.target)
+    // If toolbar is docked do not remove
+    if (
+      toolbarContainer &&
+      toolbarContainer.classList.contains('chatgptbox-toolbar-container-docked')
+    ) {
+      return
+    }
+
+    // Delete toolbar if the user clicks outside of it
     document.querySelectorAll('.chatgptbox-toolbar-container').forEach((e) => e.remove())
   })
   document.addEventListener('keydown', (e) => {
@@ -299,10 +308,11 @@ async function prepareForSelectionToolsTouch() {
         .trim()
         .replace(/^-+|-+$/g, '')
       if (selection) {
-        toolbarContainer = createElementAtPosition(
-          e.changedTouches[0].pageX + 20,
-          e.changedTouches[0].pageY + 20,
-        )
+        let position = { x: e.changedTouches[0].pageX + 20, y: e.changedTouches[0].pageY + 20 }
+
+        position = ensureFloatingToolbarVisibilityInsideScreen(position)
+
+        toolbarContainer = createElementAtPosition(position.x, position.y)
         createSelectionTools(toolbarContainer, selection)
       }
     })
@@ -335,12 +345,13 @@ async function prepareForRightClickMenu() {
         if (prompt) prompt = await cropText(`Reply in ${await getPreferredLanguage()}.\n` + prompt)
       }
 
-      const position = data.useMenuPosition
+      let position = data.useMenuPosition
         ? { x: menuX, y: menuY }
         : { x: window.innerWidth / 2 - 300, y: window.innerHeight / 2 - 200 }
 
+      position = ensureFloatingToolbarVisibilityInsideScreen(position)
       const container = createElementAtPosition(position.x, position.y)
-      container.className = 'chatgptbox-toolbar-container-not-queryable'
+      container.className = 'chatgptbox-toolbar-container-docked'
       render(
         <FloatingToolbar
           session={initSession({ modelName: (await getUserConfig()).modelName })}

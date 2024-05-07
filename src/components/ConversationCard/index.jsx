@@ -10,7 +10,7 @@ import {
   LinkExternalIcon,
   MoveToBottomIcon,
 } from '@primer/octicons-react'
-import { Pin, WindowDesktop, XLg } from 'react-bootstrap-icons'
+import { PinFill, WindowDesktop, XLg } from 'react-bootstrap-icons'
 import FileSaver from 'file-saver'
 import { render } from 'preact'
 import FloatingToolbar from '../FloatingToolbar'
@@ -25,6 +25,7 @@ import { initSession } from '../../services/init-session.mjs'
 import { findLastIndex } from 'lodash-es'
 import { generateAnswersWithBingWebApi } from '../../services/apis/bing-web.mjs'
 import { handlePortError } from '../../services/wrappers.mjs'
+import { ensureFloatingToolbarVisibilityInsideScreen } from '../../utils/ensure-floating-toolbar-visibility-inside-screen'
 
 const logo = Browser.runtime.getURL('logo.png')
 
@@ -318,28 +319,6 @@ function ConversationCard(props) {
             ...(isSafari() ? { maxWidth: '200px' } : {}),
           }}
         >
-          {props.closeable ? (
-            <XLg
-              className="gpt-util-icon"
-              title={t('Close the Window')}
-              size={16}
-              onClick={() => {
-                port.disconnect()
-                if (props.onClose) props.onClose()
-              }}
-            />
-          ) : props.dockable ? (
-            <Pin
-              className="gpt-util-icon"
-              title={t('Pin the Window')}
-              size={16}
-              onClick={() => {
-                if (props.onDock) props.onDock()
-              }}
-            />
-          ) : (
-            <img src={logo} style="user-select:none;width:20px;height:20px;" />
-          )}
           <select
             style={props.notClampSize ? {} : { width: 0, flexGrow: 1 }}
             className="normal-button"
@@ -373,6 +352,37 @@ function ConversationCard(props) {
                 )
             })}
           </select>
+          {props.closeable ? (
+            <XLg
+              className="gpt-util-icon"
+              title={t('Close the Window')}
+              size={16}
+              onClick={() => {
+                port.disconnect()
+                if (props.onClose) props.onClose()
+              }}
+            />
+          ) : props.dockable ? (
+            <PinFill
+              className="gpt-util-icon"
+              title={t('Pin the Window')}
+              size={21}
+              onClick={(e) => {
+                const ancestor = e.target.closest('.chatgptbox-toolbar-container')
+                if (ancestor) {
+                  if (ancestor.classList.contains('chatgptbox-toolbar-container-docked')) {
+                    ancestor.classList.remove('chatgptbox-toolbar-container-docked')
+                    e.target.style.color = 'black' // Reset color
+                  } else {
+                    ancestor.classList.add('chatgptbox-toolbar-container-docked')
+                    e.target.style.color = 'goldenrod'
+                  }
+                }
+              }}
+            />
+          ) : (
+            <img src={logo} style="user-select:none;width:20px;height:20px;" />
+          )}
         </span>
         {props.draggable && !completeDraggable && (
           <div className="draggable" style={{ flexGrow: 2, cursor: 'move', height: '55px' }} />
@@ -402,10 +412,11 @@ function ConversationCard(props) {
             title={t('Float the Window')}
             size={16}
             onClick={() => {
-              const position = { x: window.innerWidth / 2 - 300, y: window.innerHeight / 2 - 200 }
+              let position = { x: window.innerWidth / 2 - 300, y: window.innerHeight / 2 - 200 }
 
+              position = ensureFloatingToolbarVisibilityInsideScreen(position)
               const toolbarContainer = createElementAtPosition(position.x, position.y)
-              toolbarContainer.className = 'chatgptbox-toolbar-container-not-queryable'
+              toolbarContainer.className = 'chatgptbox-toolbar-container-docked'
               render(
                 <FloatingToolbar
                   session={session}
