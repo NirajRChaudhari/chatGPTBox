@@ -18,6 +18,8 @@ import {
   getClientPosition,
   getPossibleElementByQuerySelector,
 } from '../utils'
+import { findClosestEditableAncestor } from '../utils/find-closest-editable-ancestor'
+import { ensureFloatingToolbarVisibilityInsideScreen } from '../utils/ensure-floating-toolbar-visibility-inside-screen'
 import FloatingToolbar from '../components/FloatingToolbar'
 import Browser from 'webextension-polyfill'
 import { getPreferredLanguage } from '../config/language.mjs'
@@ -149,78 +151,6 @@ function checkIfExcludedElement(element) {
   return false
 }
 
-function findEditableElement(target) {
-  // First, try to find the nearest editable ancestor using closest()
-  let editableElement = target.closest('input, textarea, [contenteditable="true"]')
-
-  // If closest() doesn't find anything, perform a manual traversal as a fallback
-  if (!editableElement) {
-    let element = target
-    let depth = 0 // Initialize counter to track depth of traversal
-
-    while (element && element !== document.body && depth < 10) {
-      // Limit traversal to 10 levels
-      if (
-        element.tagName === 'INPUT' ||
-        element.tagName === 'TEXTAREA' ||
-        (element.getAttribute && element.getAttribute('contenteditable') === 'true')
-      ) {
-        editableElement = element
-        break
-      }
-      element = element.parentNode
-      depth++ // Increment the counter with each loop iteration
-    }
-  }
-
-  return editableElement
-}
-
-function ensureToolbarVisibilityInsideScreen(position) {
-  // Constants for the toolbar dimensions
-  const width = 420
-  const height = 250
-
-  // Ensure the toolbar doesn't appear too far to the left or top
-  if (position.x < 100) {
-    position.x = 100
-  }
-  if (position.y < 180) {
-    position.y = 180
-  }
-
-  // Calculate the right and bottom edges of the toolbar
-  let right = position.x + width
-  let bottom = position.y + height
-
-  // Get viewport width
-  let viewportWidth = window.innerWidth || document.documentElement.clientWidth
-
-  // Calculate the maximum allowed x-coordinate for the toolbar
-  let maxAllowedX = viewportWidth - 340
-
-  // Constraints for right edge
-  if (right > viewportWidth) {
-    position.x = maxAllowedX // Adjust x to ensure the toolbar doesn't exceed the viewport boundary
-  }
-
-  // Get the full document height
-  let documentHeight = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight,
-    document.body.clientHeight,
-    document.documentElement.clientHeight,
-  )
-
-  // Constraints for bottom edge
-  if (bottom > documentHeight) {
-    position.y = documentHeight - height - 10 // Adjust y to ensure the toolbar doesn't go below the document height
-  }
-  return position
-}
-
 async function prepareForSelectionTools() {
   document.addEventListener('mouseup', (e) => {
     if (checkIfExcludedElement(e.target)) {
@@ -230,7 +160,7 @@ async function prepareForSelectionTools() {
     // Update focused input element
     const selection = window.getSelection()
     if (selection && selection.toString().length > 0) {
-      if (findEditableElement(e.target)) {
+      if (findClosestEditableAncestor(e.target)) {
         focusedInput = e.target
       }
     }
@@ -259,7 +189,7 @@ async function prepareForSelectionTools() {
         else {
           let inputElement = null
 
-          if (selectionElement && findEditableElement(selectionElement)) {
+          if (selectionElement && findClosestEditableAncestor(selectionElement)) {
             inputElement = selectionElement
           }
 
@@ -274,7 +204,7 @@ async function prepareForSelectionTools() {
           }
         }
         position.y += 20
-        position = ensureToolbarVisibilityInsideScreen(position)
+        position = ensureFloatingToolbarVisibilityInsideScreen(position)
         toolbarContainer = createElementAtPosition(position.x, position.y)
         await createSelectionTools(toolbarContainer, selection)
       }
@@ -297,7 +227,11 @@ async function prepareForSelectionTools() {
     }
 
     // Delete toolbar if the user is typing in an input or textarea
-    if (toolbarContainer && !toolbarContainer.contains(e.target) && findEditableElement(e.target)) {
+    if (
+      toolbarContainer &&
+      !toolbarContainer.contains(e.target) &&
+      findClosestEditableAncestor(e.target)
+    ) {
       setTimeout(() => {
         if (!window.getSelection()?.toString().trim()) deleteToolbar()
       })
@@ -315,7 +249,7 @@ async function prepareForSelectionTools() {
         if (
           selection.toString().length > 0 &&
           document.activeElement &&
-          findEditableElement(document.activeElement)
+          findClosestEditableAncestor(document.activeElement)
         ) {
           focusedInput = document.activeElement
 
@@ -336,6 +270,7 @@ async function prepareForSelectionTools() {
                 y: position.y - 20,
               }
 
+              position = ensureFloatingToolbarVisibilityInsideScreen(position)
               toolbarContainer = createElementAtPosition(position.x, position.y)
               await createSelectionTools(toolbarContainer, selection)
             }
