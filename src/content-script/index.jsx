@@ -176,6 +176,51 @@ function findEditableElement(target) {
   return editableElement
 }
 
+function ensureToolbarVisibilityInsideScreen(position) {
+  // Constants for the toolbar dimensions
+  const width = 420
+  const height = 250
+
+  // Ensure the toolbar doesn't appear too far to the left or top
+  if (position.x < 100) {
+    position.x = 100
+  }
+  if (position.y < 180) {
+    position.y = 180
+  }
+
+  // Calculate the right and bottom edges of the toolbar
+  let right = position.x + width
+  let bottom = position.y + height
+
+  // Get viewport width
+  let viewportWidth = window.innerWidth || document.documentElement.clientWidth
+
+  // Calculate the maximum allowed x-coordinate for the toolbar
+  let maxAllowedX = viewportWidth - 340
+
+  // Constraints for right edge
+  if (right > viewportWidth) {
+    position.x = maxAllowedX // Adjust x to ensure the toolbar doesn't exceed the viewport boundary
+  }
+
+  // Get the full document height
+  let documentHeight = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.offsetHeight,
+    document.body.clientHeight,
+    document.documentElement.clientHeight,
+  )
+
+  // Constraints for bottom edge
+  if (bottom > documentHeight) {
+    position.y = documentHeight - height - 10 // Adjust y to ensure the toolbar doesn't go below the document height
+  }
+  return position
+}
+
 async function prepareForSelectionTools() {
   document.addEventListener('mouseup', (e) => {
     if (checkIfExcludedElement(e.target)) {
@@ -210,7 +255,7 @@ async function prepareForSelectionTools() {
         let position
 
         const config = await getUserConfig()
-        if (!config.selectionToolsNextToInputBox) position = { x: e.pageX + 20, y: e.pageY + 20 }
+        if (!config.selectionToolsNextToInputBox) position = { x: e.pageX, y: e.pageY }
         else {
           let inputElement = null
 
@@ -220,15 +265,16 @@ async function prepareForSelectionTools() {
 
           if (inputElement) {
             position = getClientPosition(inputElement)
-            position = {
-              x: position.x + window.scrollX + inputElement.offsetWidth + 50,
-              y: e.pageY + 30,
-            }
+            // position = {
+            //   x: position.x + window.scrollX + inputElement.offsetWidth,
+            //   y: e.pageY,
+            // }
           } else {
-            position = { x: e.pageX + 20, y: e.pageY + 20 }
+            position = { x: e.pageX, y: e.pageY }
           }
         }
-        console.log(position)
+        position.y += 20
+        position = ensureToolbarVisibilityInsideScreen(position)
         toolbarContainer = createElementAtPosition(position.x, position.y)
         await createSelectionTools(toolbarContainer, selection)
       }
@@ -286,7 +332,7 @@ async function prepareForSelectionTools() {
               let position = getClientPosition(focusedInput)
 
               position = {
-                x: position.x + focusedInput.offsetWidth - 270,
+                x: position.x + focusedInput.offsetWidth - 400,
                 y: position.y - 20,
               }
 
@@ -357,6 +403,7 @@ async function prepareForRightClickMenu() {
       const position = data.useMenuPosition
         ? { x: menuX, y: menuY }
         : { x: window.innerWidth / 2 - 300, y: window.innerHeight / 2 - 200 }
+
       const container = createElementAtPosition(position.x, position.y)
       container.className = 'chatgptbox-toolbar-container-not-queryable'
       render(

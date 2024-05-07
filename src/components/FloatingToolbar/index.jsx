@@ -72,7 +72,7 @@ function FloatingToolbar(props) {
   }, [])
 
   useEffect(() => {
-    const textArea = document.querySelector('.reply-popup .chat-box-popup-textarea')
+    const textArea = document.querySelector('.reply-box-input-popup .chat-box-popup-textarea')
     if (replyPopupVisible && textArea) {
       textArea.focus() // Focus the textarea
     }
@@ -116,6 +116,7 @@ function FloatingToolbar(props) {
     if (!replyPopupVisible) {
       setReplyOptionsVisible(false)
     }
+    setModulePopupVisible(false)
   }
 
   const handleMouseLeaveHiddenTools = () => {
@@ -550,7 +551,7 @@ function FloatingToolbar(props) {
             )}
             {replyPopupVisible && (
               <div
-                className="input-with-icon reply-popup"
+                className="reply-box-input-popup input-with-icon"
                 style={{
                   position: 'absolute',
                   top: '-175px',
@@ -563,6 +564,8 @@ function FloatingToolbar(props) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
+                  border: '1px solid #ccc',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
