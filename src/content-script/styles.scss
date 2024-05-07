@@ -1442,8 +1442,8 @@
   padding: 6px;
   cursor: pointer;
   white-space: nowrap;
-  font-size: 13px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
   color: darkslategray;
 }
 
@@ -1463,6 +1463,7 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   padding: 5px; /* Add padding for the hidden tools */
   z-index: 2000; /* Ensure the hidden tools are above other elements */
+  font-weight: bold;
 }
 
 .chatgptbox-selection-toolbar-button {
@@ -1483,7 +1484,7 @@
 }
 
 .tool-label {
-  font-size: 13px;
+  font-size: 14px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -1498,16 +1499,17 @@
   display: flex;
   flex-direction: column; /* Changes to column to stack the elements */
   position: absolute;
-  width: 350px;
-  right: -50px;
+  width: 400px;
+  right: -70px;
   left: auto;
-  top: -132px; /* Adjust the position as needed */
+  top: -155px; /* Adjust the position as needed */
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 8px;
   border-bottom: 1px solid #ccc;
   z-index: 9999;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Styling for displaying selected text container */
@@ -1515,10 +1517,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between; /* Ensures space distribution between text and toggle */
-  padding: 0 8px;
+  padding: 0 6px;
   color: #666;
   font-size: 13px;
-  margin-bottom: 3px; /* Adjust for visual balance */
 }
 
 /* Styling for the text part within the selected-text-display */
@@ -1593,16 +1594,17 @@
 /* Textarea styling */
 .chat-box-popup-textarea {
   flex-grow: 1;
-  min-height: 80px;
-  max-height: 200px; /* Set maximum height before scrolling */
+  min-height: 100px;
+  max-height: 220px; /* Set maximum height before scrolling */
   overflow-y: auto; /* Allows scrolling vertically */
   border: none !important;
   outline: none !important;
   padding: 6px;
-  font-size: 14px;
+  font-size: 15px;
   resize: none; /* Disables resizing the textarea */
   box-sizing: border-box; /* Includes padding in the height calculation */
   line-height: 1.5;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Styling for the send icon */

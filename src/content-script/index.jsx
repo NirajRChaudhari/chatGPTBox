@@ -228,6 +228,7 @@ async function prepareForSelectionTools() {
             position = { x: e.pageX + 20, y: e.pageY + 20 }
           }
         }
+        console.log(position)
         toolbarContainer = createElementAtPosition(position.x, position.y)
         await createSelectionTools(toolbarContainer, selection)
       }

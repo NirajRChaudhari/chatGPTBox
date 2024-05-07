@@ -32,7 +32,7 @@ function FloatingToolbar(props) {
   const [position, setPosition] = useState(getClientPosition(props.container))
   const [virtualPosition, setVirtualPosition] = useState({ x: 0, y: 0 })
   const [hiddenToolsVisible, setHiddenToolsVisible] = useState(false)
-  const [modulePopupVisible, setModulePopupVisible] = useState(false) // New state for module popup visibility
+  const [modulePopupVisible, setModulePopupVisible] = useState(false)
   const [askPopupVisible, setAskPopupVisible] = useState(false)
   const [askInputText, setAskInputText] = useState('')
   const [replyOptionsVisible, setReplyOptionsVisible] = useState(false) // State to toggle reply options
@@ -300,7 +300,11 @@ function FloatingToolbar(props) {
   const openReplyPopup = (type) => {
     setReplyType(type)
     setReplyPopupVisible(true)
-    setReplyOptionsVisible(false) // Close options after opening popup
+
+    setReplyOptionsVisible(false)
+    setHiddenToolsVisible(false)
+    setModulePopupVisible(false)
+    setAskPopupVisible(false)
   }
 
   const executeReply = useCallback(() => {
@@ -475,7 +479,7 @@ function FloatingToolbar(props) {
                     placeholder="Type your question here..."
                   />
                   <ArrowRightCircleFill
-                    size={25}
+                    size={26}
                     onClick={handleAskSendClick}
                     className="send-icon"
                   />
@@ -549,13 +553,13 @@ function FloatingToolbar(props) {
                 className="input-with-icon reply-popup"
                 style={{
                   position: 'absolute',
-                  top: '-155px',
-                  width: '350px',
-                  right: '-50px',
+                  top: '-175px',
+                  width: '400px',
+                  right: '-60px',
                   left: 'auto',
                   backgroundColor: 'white',
                   padding: '5px',
-                  borderRadius: '5px',
+                  borderRadius: '10px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -581,13 +585,13 @@ function FloatingToolbar(props) {
                     onKeyDown={handleReplyContextKeyDown}
                     className="chat-box-popup-textarea"
                     placeholder="Add your reply context..."
-                    style={{ flex: 1, marginRight: '10px' }} // Adjust size and margin between textarea and button
+                    style={{ flex: 1, marginRight: '5px' }} // Adjust size and margin between textarea and button
                   />
                   <ArrowRightCircleFill
-                    size={25}
+                    size={26}
                     onClick={executeReply}
                     className="send-icon"
-                    style={{ cursor: 'pointer', alignSelf: 'center' }} // Adjust alignment to match textarea
+                    style={{ cursor: 'pointer', alignSelf: 'center', marginLeft: '0px' }} // Adjust alignment to match textarea
                   />
                 </div>
               </div>
