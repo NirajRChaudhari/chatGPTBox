@@ -216,10 +216,10 @@ async function prepareForSelectionTools() {
       focusedInput = null
     }
 
+    // If the toolbar is already open, and the click is inside the toolbar, do nothing
     if (toolbarContainer && toolbarContainer.contains(e.target)) return
 
-    console.log(toolbarContainer, e.target)
-    // If toolbar is docked do not remove
+    // If toolbar is docked, do nothing
     if (
       toolbarContainer &&
       toolbarContainer.classList.contains('chatgptbox-toolbar-container-docked')

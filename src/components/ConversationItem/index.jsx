@@ -16,7 +16,16 @@ function AnswerTitle({ descName, modelName }) {
   const config = useConfig()
 
   return (
-    <p style="white-space: nowrap;">
+    <p
+      style={{
+        whiteSpace: 'nowrap',
+        color: 'darkgoldenrod',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        letterSpacing: '0.05em',
+      }}
+    >
       {descName && modelName
         ? `${t(descName)}${
             isUsingCustomModel({ modelName }) ? ' (' + config.customModelName + ')' : ''
@@ -73,15 +82,21 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
           <div className="gpt-header">
             <p>{t('You')}:</p>
             <div className="gpt-util-group">
-              <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={14} />
-              <ReadButton contentFn={() => content} size={14} />
+              <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={16} />
+              <ReadButton contentFn={() => content} size={16} />
               {!collapsed ? (
                 <span
                   title={t('Collapse')}
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(true)}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = 'darkgoldenrod'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = 'black'
+                  }}
                 >
-                  <XCircleIcon size={14} />
+                  <XCircleIcon size={16} />
                 </span>
               ) : (
                 <span
@@ -89,7 +104,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(false)}
                 >
-                  <ChevronDownIcon size={14} />
+                  <ChevronDownIcon size={16} />
                 </span>
               )}
             </div>
@@ -104,7 +119,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
             <AnswerTitle descName={descName} modelName={modelName} />
             <div className="gpt-util-group">
               {focusedInput && (
-                <>
+                <span style={{ marginTop: '5px' }}>
                   <TextareaT
                     onClick={replaceTextInFocusedInput}
                     style={{
@@ -113,31 +128,53 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                       backgroundColor:
                         focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA'
                           ? 'initial'
-                          : 'orange',
+                          : 'red',
                       borderRadius: '5px',
                     }}
                     data-tip={t('Replace Text')}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = 'darkgoldenrod'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = 'black'
+                    }}
                   />
                   <ReactTooltip />
-                </>
+                </span>
               )}
 
               {onRetry && (
-                <span title={t('Retry')} className="gpt-util-icon" onClick={onRetry}>
-                  <SyncIcon size={14} />
+                <span
+                  title={t('Retry')}
+                  className="gpt-util-icon"
+                  onClick={onRetry}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = 'darkgoldenrod'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = 'black'
+                  }}
+                >
+                  <SyncIcon size={16} />
                 </span>
               )}
               {modelName && (
-                <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={14} />
+                <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={16} />
               )}
-              {modelName && <ReadButton contentFn={() => content} size={14} />}
+              {modelName && <ReadButton contentFn={() => content} size={16} />}
               {!collapsed ? (
                 <span
                   title={t('Collapse')}
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(true)}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = 'darkgoldenrod'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = 'black'
+                  }}
                 >
-                  <XCircleIcon size={14} />
+                  <XCircleIcon size={16} />
                 </span>
               ) : (
                 <span
@@ -145,7 +182,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(false)}
                 >
-                  <ChevronDownIcon size={14} />
+                  <ChevronDownIcon size={16} />
                 </span>
               )}
             </div>
@@ -160,18 +197,28 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
             <p>{t('Error')}:</p>
             <div className="gpt-util-group">
               {onRetry && (
-                <span title={t('Retry')} className="gpt-util-icon" onClick={onRetry}>
-                  <SyncIcon size={14} />
+                <span
+                  title={t('Retry')}
+                  className="gpt-util-icon"
+                  onClick={onRetry}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = 'darkgoldenrod'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = 'black'
+                  }}
+                >
+                  <SyncIcon size={16} />
                 </span>
               )}
-              <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={14} />
+              <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={16} />
               {!collapsed ? (
                 <span
                   title={t('Collapse')}
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(true)}
                 >
-                  <XCircleIcon size={14} />
+                  <XCircleIcon size={16} />
                 </span>
               ) : (
                 <span
@@ -179,7 +226,7 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   className="gpt-util-icon"
                   onClick={() => setCollapsed(false)}
                 >
-                  <ChevronDownIcon size={14} />
+                  <ChevronDownIcon size={16} />
                 </span>
               )}
             </div>

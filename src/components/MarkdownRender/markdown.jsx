@@ -12,7 +12,7 @@ import { memo } from 'react'
 
 export function MarkdownRender(props) {
   return (
-    <div dir="auto">
+    <div dir="auto" style={{ fontSize: '15px', fontFamily: 'Arial, sans-serif' }}>
       <ReactMarkdown
         allowedElements={[
           'div',

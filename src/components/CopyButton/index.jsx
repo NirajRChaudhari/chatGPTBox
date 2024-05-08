@@ -29,6 +29,12 @@ function CopyButton({ className, contentFn, size }) {
       title={t('Copy')}
       className={`gpt-util-icon ${className ? className : ''}`}
       onClick={onClick}
+      onMouseEnter={(e) => {
+        e.target.style.color = 'darkgoldenrod'
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.color = 'black'
+      }}
     >
       {copied ? <CheckIcon size={size} /> : <CopyIcon size={size} />}
     </span>

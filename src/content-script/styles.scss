@@ -1251,6 +1251,9 @@
     cursor: pointer;
     align-items: center;
     z-index: 0;
+    color: 'black';
+    transition: 'color 0.3s';
+    cursor: 'pointer';
   }
 
   .normal-button {
@@ -1309,7 +1312,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 5px;
     color: var(--font-color);
 
     p {

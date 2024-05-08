@@ -56,6 +56,12 @@ function ReadButton({ className, contentFn, size }) {
       title={t('Read Aloud')}
       className={`gpt-util-icon ${className ? className : ''}`}
       onClick={speaking ? stopSpeak : startSpeak}
+      onMouseEnter={(e) => {
+        e.target.style.color = 'darkgoldenrod'
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.color = 'black'
+      }}
     >
       {speaking ? <MuteIcon size={size} /> : <UnmuteIcon size={size} />}
     </span>

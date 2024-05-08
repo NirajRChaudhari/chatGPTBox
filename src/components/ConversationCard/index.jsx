@@ -303,6 +303,14 @@ function ConversationCard(props) {
 
   const retryFn = useMemo(() => getRetryFn(session), [session])
 
+  const gptUtilIconMouseEnter = (e) => {
+    e.target.style.color = 'darkgoldenrod'
+  }
+
+  const gptUtilIconMouseLeave = (e) => {
+    e.target.style.color = 'black'
+  }
+
   return (
     <div className="gpt-inner">
       <div
@@ -314,14 +322,34 @@ function ConversationCard(props) {
         <span
           className="gpt-util-group"
           style={{
-            padding: '15px 0 15px 15px',
+            padding: '8px 0 5px 15px',
             ...(props.notClampSize ? {} : { flexGrow: isSafari() ? 0 : 1 }),
             ...(isSafari() ? { maxWidth: '200px' } : {}),
           }}
         >
           <select
-            style={props.notClampSize ? {} : { width: 0, flexGrow: 1 }}
-            className="normal-button"
+            style={
+              props.notClampSize
+                ? {
+                    padding: '0px 3px',
+                    borderRadius: '6px',
+                    border: '1px solid #ccc',
+                    backgroundColor: '#fff',
+                    color: '#333',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }
+                : {
+                    width: 0,
+                    flexGrow: 1,
+                    padding: '0px 3px',
+                    borderRadius: '6px',
+                    border: '1px solid #ccc',
+                    backgroundColor: '#fff',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }
+            }
             required
             onChange={(e) => {
               const modelName = e.target.value
@@ -346,6 +374,7 @@ function ConversationCard(props) {
                     value={modelName}
                     key={modelName}
                     selected={modelName === session.modelName}
+                    className="chatgptbox-model-selection-popup-item"
                   >
                     {desc}
                   </option>
@@ -361,6 +390,8 @@ function ConversationCard(props) {
                 port.disconnect()
                 if (props.onClose) props.onClose()
               }}
+              onMouseEnter={gptUtilIconMouseEnter}
+              onMouseLeave={gptUtilIconMouseLeave}
             />
           ) : props.dockable ? (
             <PinFill
@@ -375,7 +406,7 @@ function ConversationCard(props) {
                     e.target.style.color = 'black' // Reset color
                   } else {
                     ancestor.classList.add('chatgptbox-toolbar-container-docked')
-                    e.target.style.color = 'goldenrod'
+                    e.target.style.color = 'darkgoldenrod'
                   }
                 }
               }}
@@ -403,6 +434,8 @@ function ConversationCard(props) {
               rel="nofollow noopener noreferrer"
               className="gpt-util-icon"
               style="color: inherit;"
+              onMouseEnter={gptUtilIconMouseEnter}
+              onMouseLeave={gptUtilIconMouseLeave}
             >
               <LinkExternalIcon size={16} />
             </a>
@@ -428,6 +461,8 @@ function ConversationCard(props) {
                 toolbarContainer,
               )
             }}
+            onMouseEnter={gptUtilIconMouseEnter}
+            onMouseLeave={gptUtilIconMouseLeave}
           />
           <DeleteButton
             size={16}
@@ -471,6 +506,8 @@ function ConversationCard(props) {
                   }),
                 )
               }}
+              onMouseEnter={gptUtilIconMouseEnter}
+              onMouseLeave={gptUtilIconMouseLeave}
             >
               <ArchiveIcon size={16} />
             </span>
@@ -485,6 +522,8 @@ function ConversationCard(props) {
                   behavior: 'smooth',
                 })
               }}
+              onMouseEnter={gptUtilIconMouseEnter}
+              onMouseLeave={gptUtilIconMouseLeave}
             >
               <MoveToBottomIcon size={16} />
             </span>
@@ -502,6 +541,8 @@ function ConversationCard(props) {
               const blob = new Blob([output], { type: 'text/plain;charset=utf-8' })
               FileSaver.saveAs(blob, 'conversation.md')
             }}
+            onMouseEnter={gptUtilIconMouseEnter}
+            onMouseLeave={gptUtilIconMouseLeave}
           >
             <DesktopDownloadIcon size={16} />
           </span>
