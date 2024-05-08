@@ -19,6 +19,7 @@ import {
 import { Models, PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 import { CopilotIcon } from '@primer/octicons-react'
+import { ensureFloatingToolbarVisibilityInsideScreen } from '../../utils/ensure-floating-toolbar-visibility-inside-screen'
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
@@ -418,7 +419,7 @@ function FloatingToolbar(props) {
     const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
 
     const updatePosition = useCallback(() => {
-      const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
+      const newPosition = ensureFloatingToolbarVisibilityInsideScreen(position)
       if (position.x !== newPosition.x || position.y !== newPosition.y) {
         setPosition(newPosition)
       }

@@ -36,6 +36,8 @@ export function ensureFloatingToolbarVisibilityInsideScreen(position) {
     document.documentElement.clientHeight,
   )
 
+  // console.log('documentHeight', documentHeight)
+  // console.log(position.y)
   // Constraints for bottom edge
   if (bottom > documentHeight) {
     position.y = documentHeight - height - 10 // Adjust y to ensure the toolbar doesn't go below the document height
