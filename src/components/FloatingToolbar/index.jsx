@@ -2,7 +2,7 @@ import { cloneElement, useCallback, useEffect, useState } from 'react'
 import ConversationCard from '../ConversationCard'
 import PropTypes from 'prop-types'
 import { config as toolsConfig } from '../../content-script/selection-tools'
-import { getClientPosition, isMobile, setElementPositionInViewport } from '../../utils'
+import { getClientPosition, isMobile } from '../../utils'
 import Draggable from 'react-draggable'
 import { useClampWindowSize } from '../../hooks/use-clamp-window-size'
 import { useTranslation } from 'react-i18next'
@@ -329,7 +329,8 @@ function FloatingToolbar(props) {
 
     // console.log('Initial Box ', position, windowSize, virtualPosition)
     const updatePosition = useCallback(() => {
-      const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
+      // const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
+      const newPosition = ensureFloatingToolbarVisibilityInsideScreen(position, props.container)
       if (position.x !== newPosition.x || position.y !== newPosition.y) {
         setPosition(newPosition)
       }
@@ -341,7 +342,7 @@ function FloatingToolbar(props) {
       },
       onStop: () => {
         setPosition({ x: position.x + virtualPosition.x, y: position.y + virtualPosition.y })
-        setVirtualPosition({ x: 0, y: 0 })
+        // setVirtualPosition({ x: 0, y: 0 })
       },
     }
 
@@ -419,6 +420,7 @@ function FloatingToolbar(props) {
     const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
 
     const updatePosition = useCallback(() => {
+      // const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
       const newPosition = ensureFloatingToolbarVisibilityInsideScreen(position)
       if (position.x !== newPosition.x || position.y !== newPosition.y) {
         setPosition(newPosition)
@@ -431,7 +433,7 @@ function FloatingToolbar(props) {
       },
       onStop: () => {
         setPosition({ x: position.x + virtualPosition.x, y: position.y + virtualPosition.y })
-        setVirtualPosition({ x: 0, y: 0 })
+        // setVirtualPosition({ x: 0, y: 0 })
       },
     }
 

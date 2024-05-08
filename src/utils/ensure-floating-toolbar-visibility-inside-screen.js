@@ -1,7 +1,15 @@
-export function ensureFloatingToolbarVisibilityInsideScreen(position) {
+export function ensureFloatingToolbarVisibilityInsideScreen(position, element = null) {
   // Constants for the toolbar dimensions
-  const width = 420
-  const height = 250
+  let width
+  let height
+
+  if (element) {
+    width = element.offsetWidth
+    height = element.offsetHeight
+  } else {
+    width = 420
+    height = 250
+  }
 
   // Ensure the toolbar doesn't appear too far to the left or top
   if (position.x < 100) {
