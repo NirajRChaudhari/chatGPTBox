@@ -317,6 +317,8 @@ function FloatingToolbar(props) {
   }, [replyType, handleReplyAsEmail, handleReplyAsChat])
 
   if (triggered) {
+    let widthFactorOfScreen = 0.45
+
     console.log('Initial Box ', position, windowSize, virtualPosition)
     const updatePosition = useCallback(() => {
       const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
@@ -355,6 +357,7 @@ function FloatingToolbar(props) {
     if (config.alwaysPinWindow) onDock()
 
     console.log('Final Box : ', position, windowSize, virtualPosition)
+    console.log('\n\n')
     return (
       <div data-theme={config.themeMode}>
         <Draggable
@@ -365,7 +368,7 @@ function FloatingToolbar(props) {
         >
           <div
             className="chatgptbox-selection-window"
-            style={{ width: `${windowSize[0] * 0.45}px` }}
+            style={{ width: `${windowSize[0] * widthFactorOfScreen}px` }}
           >
             <div className="chatgptbox-container">
               <ConversationCard
@@ -413,7 +416,7 @@ function FloatingToolbar(props) {
       },
       onStop: () => {
         setPosition({ x: position.x + virtualPosition.x, y: position.y + virtualPosition.y })
-        // setVirtualPosition({ x: 0, y: 0 })
+        setVirtualPosition({ x: 0, y: 0 })
       },
     }
 
