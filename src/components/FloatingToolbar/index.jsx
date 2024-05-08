@@ -417,6 +417,13 @@ function FloatingToolbar(props) {
     const visibleTools = tools.slice(0, maxVisibleTools)
     const hiddenTools = tools.slice(maxVisibleTools) // Tools to be hidden initially
 
+    const updatePosition = useCallback(() => {
+      const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
+      if (position.x !== newPosition.x || position.y !== newPosition.y) {
+        setPosition(newPosition)
+      }
+    }, [props.container, position])
+
     const dragEvent = {
       onDrag: (e, ui) => {
         setVirtualPosition({ x: virtualPosition.x + ui.deltaX, y: virtualPosition.y + ui.deltaY })
@@ -425,6 +432,10 @@ function FloatingToolbar(props) {
         setPosition({ x: position.x + virtualPosition.x, y: position.y + virtualPosition.y })
         setVirtualPosition({ x: 0, y: 0 })
       },
+    }
+
+    if (virtualPosition.x === 0 && virtualPosition.y === 0) {
+      updatePosition()
     }
 
     return (
@@ -443,17 +454,33 @@ function FloatingToolbar(props) {
                   marginLeft: '4px',
                   marginRight: '3px',
                   color: 'goldenrod',
-                  transition: 'color 0.2s ease', // Add transition for color change
+                  transition: 'transform 0.3s ease, color 0.2s ease', // Add transition for color change
                 }}
-                onMouseEnter={(e) => (e.target.style.color = 'darkgoldenrod')} // Change color on hover
-                onMouseLeave={(e) => (e.target.style.color = 'goldenrod')} // Revert color on hover out
+                onMouseEnter={(e) => {
+                  e.target.style.color = 'darkgoldenrod'
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = 'goldenrod'
+                  e.target.style.transform = 'scale(1)'
+                }}
               />{' '}
-              {/* CpuFill icon for model selection */}
             </div>
             <div
               className="chatgptbox-selection-toolbar-button"
-              style={{ height: '100%', marginRight: '3px', marginLeft: '5px' }}
+              style={{
+                height: '100%',
+                marginRight: '3px',
+                marginLeft: '5px',
+                transition: 'transform 0.3s ease, color 0.2s ease',
+              }}
               onClick={toggleAskPopup}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.1)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)'
+              }}
             >
               <CopilotIcon
                 size={19}
@@ -495,6 +522,13 @@ function FloatingToolbar(props) {
                     size={26}
                     onClick={handleAskSendClick}
                     className="send-icon"
+                    style={{ transition: 'transform 0.3s ease, color 0.2s ease' }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'scale(1)'
+                    }}
                   />
                 </div>
               </div>
@@ -518,6 +552,13 @@ function FloatingToolbar(props) {
                 onClick={tool.onClick}
                 data-tip={tool.label} // Set the tooltip text
                 data-for={`toolTooltip-${index}`} // Set a unique tooltip ID for each tool
+                style={{ transition: 'transform 0.3s ease, color 0.2s ease' }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
               >
                 {tool.icon}
                 <ReactTooltip
@@ -543,6 +584,13 @@ function FloatingToolbar(props) {
                     backgroundColor: 'white',
                     padding: '5px',
                     borderRadius: '5px',
+                    transition: 'transform 0.3s ease, color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1)'
                   }}
                 >
                   <ChatLeftText size={22} />
@@ -555,6 +603,13 @@ function FloatingToolbar(props) {
                     padding: '5px',
                     borderRadius: '5px',
                     marginLeft: '4px',
+                    transition: 'transform 0.3s ease, color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1)'
                   }}
                 >
                   <EnvelopeAt size={22} />
@@ -606,7 +661,18 @@ function FloatingToolbar(props) {
                     size={26}
                     onClick={executeReply}
                     className="send-icon"
-                    style={{ cursor: 'pointer', alignSelf: 'center', marginLeft: '0px' }} // Adjust alignment to match textarea
+                    style={{
+                      cursor: 'pointer',
+                      alignSelf: 'center',
+                      marginLeft: '0px',
+                      transition: 'transform 0.3s ease, color 0.2s ease',
+                    }} // Adjust alignment to match textarea
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'scale(1)'
+                    }}
                   />
                 </div>
               </div>
@@ -636,8 +702,16 @@ function FloatingToolbar(props) {
                       key={index}
                       className="chatgptbox-selection-toolbar-button"
                       onClick={tool.onClick}
+                      style={{ transition: 'transform 0.3s ease, color 0.2s ease' }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = 'scale(1.1)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'scale(1)'
+                      }}
                     >
                       {tool.icon}
+
                       <span className="tool-label">{tool.label}</span>
                     </div>
                   ))}
@@ -654,12 +728,18 @@ function FloatingToolbar(props) {
               height: '16px',
               borderRadius: '2px',
               position: 'absolute',
-              left: '50%',
+              left: '43%',
               bottom: '-15px',
-              transform: 'translateX(-50%)',
               width: '30px',
               textAlign: 'center',
               zIndex: 1000,
+              transition: 'transform 0.3s ease, color 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.1)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)'
             }}
           >
             <ChevronBarDown size={22} />
@@ -677,6 +757,13 @@ function FloatingToolbar(props) {
                     key={modelName}
                     className="chatgptbox-model-selection-popup-item"
                     onClick={() => handleModelChange(modelName)}
+                    style={{ transition: 'transform 0.3s ease, color 0.2s ease' }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'scale(1.05)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'scale(1)'
+                    }}
                   >
                     {desc}
                   </div>
