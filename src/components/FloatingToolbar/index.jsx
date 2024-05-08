@@ -179,7 +179,8 @@ function FloatingToolbar(props) {
   }
 
   const handleAskSendClick = async () => {
-    const p = getClientPosition(props.container)
+    let p = getClientPosition(props.container)
+    p.x = p.x - 200
     props.container.style.position = 'fixed'
     setPosition(p)
 
@@ -227,6 +228,8 @@ function FloatingToolbar(props) {
   const handleToolClick = useCallback(
     async (toolConfig) => {
       const p = getClientPosition(props.container)
+      p.x = p.x - 200
+
       props.container.style.position = 'fixed'
       setPosition(p)
       setPrompt(await toolConfig.genPrompt(selection))
@@ -237,6 +240,8 @@ function FloatingToolbar(props) {
 
   const handleReplyAsEmail = () => {
     const p = getClientPosition(props.container)
+    p.x = p.x - 200
+
     props.container.style.position = 'fixed'
     setPosition(p)
 
@@ -267,6 +272,8 @@ function FloatingToolbar(props) {
 
   const handleReplyAsChat = () => {
     const p = getClientPosition(props.container)
+    p.x = p.x - 200
+
     props.container.style.position = 'fixed'
     setPosition(p)
 
@@ -319,7 +326,7 @@ function FloatingToolbar(props) {
   if (triggered) {
     let widthFactorOfScreen = 0.45
 
-    console.log('Initial Box ', position, windowSize, virtualPosition)
+    // console.log('Initial Box ', position, windowSize, virtualPosition)
     const updatePosition = useCallback(() => {
       const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
       if (position.x !== newPosition.x || position.y !== newPosition.y) {
@@ -356,8 +363,8 @@ function FloatingToolbar(props) {
 
     if (config.alwaysPinWindow) onDock()
 
-    console.log('Final Box : ', position, windowSize, virtualPosition)
-    console.log('\n\n')
+    // console.log('Final Box : ', position, windowSize, virtualPosition)
+    // console.log('\n\n')
     return (
       <div data-theme={config.themeMode}>
         <Draggable
