@@ -29,17 +29,17 @@
         {
           "operation": "set",
           "header": "origin",
-          "value": "https://chat.openai.com"
+          "value": "https://chatgpt.com"
         },
         {
           "operation": "set",
           "header": "referer",
-          "value": "https://chat.openai.com"
+          "value": "https://chatgpt.com"
         }
       ]
     },
     "condition": {
-      "requestDomains": ["chat.openai.com"],
+      "requestDomains": ["chatgpt.com"],
       "resourceTypes": ["xmlhttprequest"]
     }
   },
@@ -61,7 +61,7 @@
       ]
     },
     "condition": {
-      "requestDomains": ["tcr9i.chat.openai.com"],
+      "requestDomains": ["https://tcr9i.chat.openai.com"],
       "resourceTypes": ["xmlhttprequest"]
     }
   }

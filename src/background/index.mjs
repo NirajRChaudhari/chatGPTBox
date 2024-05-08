@@ -76,7 +76,7 @@ function setPortProxy(port, proxyTabId) {
     }
   }
   const proxyOnDisconnect = () => {
-    port.proxy = null
+    port.proxy = Browser.tabs.connect(proxyTabId)
     console.log('Proxy has been disconnected.')
   }
   const portOnDisconnect = () => {
@@ -86,6 +86,7 @@ function setPortProxy(port, proxyTabId) {
       port.proxy.disconnect()
     }
     port.onMessage.removeListener(portOnMessage)
+
     port.onDisconnect.removeListener(portOnDisconnect)
     console.log('Port has been disconnected.')
   }
@@ -345,7 +346,7 @@ try {
       }
     },
     {
-      urls: ['https://*.openai.com/*'],
+      urls: ['https://*.openai.com/*', 'https://*.chatgpt.com/*'],
       types: ['xmlhttprequest'],
     },
     ['requestBody'],
