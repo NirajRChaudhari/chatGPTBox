@@ -31,9 +31,11 @@ function CopyButton({ className, contentFn, size }) {
       onClick={onClick}
       onMouseEnter={(e) => {
         e.target.style.color = 'darkgoldenrod'
+        e.target.style.transform = 'scale(1.2)'
       }}
       onMouseLeave={(e) => {
         e.target.style.color = 'black'
+        e.target.style.transform = 'scale(1)'
       }}
     >
       {copied ? <CheckIcon size={size} /> : <CopyIcon size={size} />}

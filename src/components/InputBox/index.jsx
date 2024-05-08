@@ -68,7 +68,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
   }
 
   return (
-    <div className="input-box">
+    <div className="input-box" style={{ border: 'none', outline: 'none' }}>
       <div
         ref={reverseDivRef}
         style={
@@ -87,13 +87,25 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
           className="interact-input"
           style={
             internalReverseResizeDir
-              ? { transform: 'rotateX(180deg)', resize: 'none' }
-              : { resize: 'vertical', minHeight: '70px' }
+              ? {
+                  transform: 'rotateX(180deg)',
+                  resize: 'none',
+                  fontSize: '15px',
+                  fontFamily: 'Arial, sans-serif',
+                  lineHeight: '1.4',
+                }
+              : {
+                  resize: 'vertical',
+                  minHeight: '75px',
+                  fontSize: '15px',
+                  fontFamily: 'Arial, sans-serif',
+                  lineHeight: '1.4',
+                }
           }
           placeholder={
             enabled
-              ? t('Type your question here\nEnter to send, shift + enter to break line')
-              : t('Type your question here\nEnter to stop generating\nShift + enter to break line')
+              ? t('Type your question here\nEnter to send, shift + Enter to break line')
+              : t('Type your question here\nEnter to stop generating\nShift + Enter to break line')
           }
           value={value}
           onChange={(e) => setValue(e.target.value)}

@@ -1242,7 +1242,7 @@
 
   .gpt-util-group {
     display: flex;
-    gap: 15px;
+    gap: 18px;
     align-items: center;
   }
 
@@ -1251,9 +1251,9 @@
     cursor: pointer;
     align-items: center;
     z-index: 0;
-    color: 'black';
-    transition: 'color 0.3s';
-    cursor: 'pointer';
+    color: black;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
   }
 
   .normal-button {
@@ -1375,17 +1375,24 @@
 
   .submit-button {
     position: absolute;
+    padding: 0px 10px;
+    bottom: 0.6em;
+    font-size: 16px;
+    line-height: 1.6em;
     right: 1.1em;
-    bottom: 0.4em;
-    padding: 1px 6px;
     cursor: pointer;
     background-color: darkgoldenrod;
     color: white;
     border: 1px solid;
     border-radius: 6px;
     border-color: rgba(31, 35, 40, 0.15);
-    font-size: 1em;
     box-shadow: 0 1px 0 rgba(31, 35, 40, 0.1);
+    transition: transform 0.3s ease, color 0.3s ease; /* Smooth transition for transform and color */
+  }
+
+  .submit-button:hover {
+    color: black;
+    transform: scale(1.1); /* Scales up the button by 10% */
   }
 
   .draggable {

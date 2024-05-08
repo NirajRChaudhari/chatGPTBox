@@ -31,6 +31,7 @@ function DeleteButton({ onConfirm, size, text }) {
           backgroundColor: 'darkgoldenrod',
           border: 'none',
           outline: 'none',
+          transition: 'transform 0.3s ease, color 0.3s ease',
         }}
         onMouseDown={(e) => {
           e.preventDefault()
@@ -46,10 +47,12 @@ function DeleteButton({ onConfirm, size, text }) {
         onMouseEnter={(e) => {
           e.target.style.color = 'white'
           e.target.style.backgroundColor = 'darkgoldenrod'
+          e.target.style.transform = 'scale(1.2)'
         }}
         onMouseLeave={(e) => {
           e.target.style.color = 'black'
           e.target.style.backgroundColor = 'burlywood'
+          e.target.style.transform = 'scale(1)'
         }}
       >
         {t('Confirm')}
@@ -63,9 +66,11 @@ function DeleteButton({ onConfirm, size, text }) {
         }}
         onMouseEnter={(e) => {
           e.target.style.color = 'darkgoldenrod'
+          e.target.style.transform = 'scale(1.2)'
         }}
         onMouseLeave={(e) => {
           e.target.style.color = 'black'
+          e.target.style.transform = 'scale(1)'
         }}
       >
         <TrashIcon size={size} />

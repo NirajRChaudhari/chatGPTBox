@@ -24,6 +24,8 @@ function AnswerTitle({ descName, modelName }) {
         fontSize: '14px',
         fontWeight: 'bold',
         letterSpacing: '0.05em',
+        marginTop: 'auto',
+        marginBottom: 'auto',
       }}
     >
       {descName && modelName
@@ -91,9 +93,11 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   onClick={() => setCollapsed(true)}
                   onMouseEnter={(e) => {
                     e.target.style.color = 'darkgoldenrod'
+                    e.target.style.transform = 'scale(1.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.color = 'black'
+                    e.target.style.transform = 'scale(1)'
                   }}
                 >
                   <XCircleIcon size={16} />
@@ -116,51 +120,78 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
       return (
         <div className={type} dir="auto">
           <div className="gpt-header">
-            <AnswerTitle descName={descName} modelName={modelName} />
-            <div className="gpt-util-group">
-              {focusedInput && (
-                <span style={{ marginTop: '5px' }}>
-                  <TextareaT
-                    onClick={replaceTextInFocusedInput}
-                    style={{
-                      cursor: 'pointer',
-                      fontSize: '20px',
-                      backgroundColor:
-                        focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA'
-                          ? 'initial'
-                          : 'red',
-                      borderRadius: '5px',
-                    }}
-                    data-tip={t('Replace Text')}
+            <div
+              className="answer_operations"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignContent: 'center',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <AnswerTitle descName={descName} modelName={modelName} />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '20px',
+                  marginLeft: '45px',
+                }}
+              >
+                {focusedInput && (
+                  <span style={{ marginTop: '5px' }}>
+                    <TextareaT
+                      onClick={replaceTextInFocusedInput}
+                      style={{
+                        cursor: 'pointer',
+                        fontSize: '20px',
+                        backgroundColor:
+                          focusedInput.tagName === 'INPUT' || focusedInput.tagName === 'TEXTAREA'
+                            ? 'initial'
+                            : 'red',
+                        borderRadius: '5px',
+                        transition: 'transform 0.3s ease, color 0.3s ease',
+                      }}
+                      data-tip={t('Replace Text')}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = 'darkgoldenrod'
+                        e.target.style.transform = 'scale(1.2)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = 'black'
+                        e.target.style.transform = 'scale(1)'
+                      }}
+                    />
+                    <ReactTooltip />
+                  </span>
+                )}
+
+                {modelName && (
+                  <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={16} />
+                )}
+
+                {onRetry && (
+                  <span
+                    title={t('Retry')}
+                    className="gpt-util-icon"
+                    onClick={onRetry}
                     onMouseEnter={(e) => {
                       e.target.style.color = 'darkgoldenrod'
+                      e.target.style.transform = 'scale(1.2)'
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.color = 'black'
+                      e.target.style.transform = 'scale(1)'
                     }}
-                  />
-                  <ReactTooltip />
-                </span>
-              )}
-
-              {onRetry && (
-                <span
-                  title={t('Retry')}
-                  className="gpt-util-icon"
-                  onClick={onRetry}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = 'darkgoldenrod'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = 'black'
-                  }}
-                >
-                  <SyncIcon size={16} />
-                </span>
-              )}
-              {modelName && (
-                <CopyButton contentFn={() => content.replace(/\n<hr\/>$/, '')} size={16} />
-              )}
+                  >
+                    <SyncIcon size={16} />
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="gpt-util-group">
               {modelName && <ReadButton contentFn={() => content} size={16} />}
               {!collapsed ? (
                 <span
@@ -169,9 +200,11 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   onClick={() => setCollapsed(true)}
                   onMouseEnter={(e) => {
                     e.target.style.color = 'darkgoldenrod'
+                    e.target.style.transform = 'scale(1.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.color = 'black'
+                    e.target.style.transform = 'scale(1)'
                   }}
                 >
                   <XCircleIcon size={16} />
@@ -203,9 +236,11 @@ export function ConversationItem({ type, content, descName, modelName, onRetry, 
                   onClick={onRetry}
                   onMouseEnter={(e) => {
                     e.target.style.color = 'darkgoldenrod'
+                    e.target.style.transform = 'scale(1.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.color = 'black'
+                    e.target.style.transform = 'scale(1)'
                   }}
                 >
                   <SyncIcon size={16} />

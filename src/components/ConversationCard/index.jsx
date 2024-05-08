@@ -305,10 +305,12 @@ function ConversationCard(props) {
 
   const gptUtilIconMouseEnter = (e) => {
     e.target.style.color = 'darkgoldenrod'
+    e.target.style.transform = 'scale(1.2)'
   }
 
   const gptUtilIconMouseLeave = (e) => {
     e.target.style.color = 'black'
+    e.target.style.transform = 'scale(1)'
   }
 
   return (
@@ -409,6 +411,12 @@ function ConversationCard(props) {
                     e.target.style.color = 'darkgoldenrod'
                   }
                 }
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)'
               }}
             />
           ) : (

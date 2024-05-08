@@ -58,9 +58,11 @@ function ReadButton({ className, contentFn, size }) {
       onClick={speaking ? stopSpeak : startSpeak}
       onMouseEnter={(e) => {
         e.target.style.color = 'darkgoldenrod'
+        e.target.style.transform = 'scale(1.2)'
       }}
       onMouseLeave={(e) => {
         e.target.style.color = 'black'
+        e.target.style.transform = 'scale(1)'
       }}
     >
       {speaking ? <MuteIcon size={size} /> : <UnmuteIcon size={size} />}
