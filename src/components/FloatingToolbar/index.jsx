@@ -255,12 +255,12 @@ function FloatingToolbar(props) {
       \n Instructions : 
       Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response:
 
-      \n Prompt to Reply :
+      \n Received Email Message:
        """` +
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\n Email Reply Context : ${replyContext}`
+        ? `\n Reply Context for my reply to above received Email : ${replyContext}`
         : '')
 
     console.log(askPrompt)
@@ -288,12 +288,12 @@ function FloatingToolbar(props) {
       \n Instructions : 
       Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Avoid filler or extra text. Do not attempt to respond to each word in the received message. Match the language style of the received message, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response:
 
-      \n Prompt to Reply :
+      \n Received Chat Message:
        """` +
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\n Chat Reply Context : ${replyContext}`
+        ? `\n Reply Context for my reply to above received Message: ${replyContext}`
         : '') +
       `\n\n 
       `
