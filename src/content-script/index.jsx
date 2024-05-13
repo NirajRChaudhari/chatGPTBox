@@ -194,7 +194,7 @@ async function prepareForSelectionTools() {
           }
 
           if (inputElement) {
-            position = getClientPosition(inputElement)
+            position = getClientPosition(inputElement, true)
             // position = {
             //   x: position.x + window.scrollX + inputElement.offsetWidth,
             //   y: e.pageY,
@@ -234,7 +234,6 @@ async function prepareForSelectionTools() {
     if (checkIfExcludedElement(e.target)) {
       return
     }
-
     // Delete toolbar if the user is typing in an input or textarea
     if (
       toolbarContainer &&
@@ -272,7 +271,7 @@ async function prepareForSelectionTools() {
               .replace(/^-+|-+$/g, '')
 
             if (selection) {
-              let position = getClientPosition(focusedInput)
+              let position = getClientPosition(focusedInput, true)
 
               position = {
                 x: position.x + focusedInput.offsetWidth - 400,

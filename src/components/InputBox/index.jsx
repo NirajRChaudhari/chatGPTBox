@@ -11,6 +11,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
   const inputRef = useRef(null)
   const resizedRef = useRef(false)
   const [internalReverseResizeDir, setInternalReverseResizeDir] = useState(reverseResizeDir)
+  const [showPopup, setShowPopup] = useState(false)
 
   useEffect(() => {
     setInternalReverseResizeDir(
@@ -47,10 +48,11 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
   })
 
   useEffect(() => {
-    if (enabled)
+    if (enabled) {
       getUserConfig().then((config) => {
         if (config.focusAfterAnswer) inputRef.current.focus()
       })
+    }
   }, [enabled])
 
   const handleKeyDownOrClick = (e) => {
@@ -67,6 +69,10 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
     }
   }
 
+  const togglePopup = () => {
+    setShowPopup(!showPopup)
+  }
+
   return (
     <div className="input-box" style={{ border: 'none', outline: 'none' }}>
       <div
@@ -77,13 +83,134 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
             resize: 'vertical',
             overflow: 'hidden',
             minHeight: '160px',
+            position: 'relative',
           }
         }
       >
+        <button
+          className="dot-button-popup"
+          style={{
+            position: 'absolute',
+            marginTop: '5px',
+            right: '5px',
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            border: 'none',
+            backgroundColor: 'black',
+            transition: 'transform 0.3s, background-color 0.3s',
+          }}
+          onMouseEnter={(e) => {
+            togglePopup()
+            e.target.style.transform = 'scale(1.3)'
+            e.target.style.backgroundColor = 'goldenrod'
+          }}
+          onMouseLeave={(e) => {
+            if (showPopup) return
+
+            e.target.style.transform = 'scale(1)'
+            e.target.style.backgroundColor = 'black'
+          }}
+        />
+        {showPopup && (
+          <div
+            className="popup"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'absolute',
+              right: '20px',
+              backgroundColor: 'white',
+              border: 'none',
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+              zIndex: '999999',
+              overflowY: 'auto', // Change overflow to 'auto' for vertical scrollbar
+              maxHeight: '200px',
+              marginTop: '-110px',
+              borderRadius: '6px',
+            }}
+            onMouseLeave={() => {
+              setTimeout(() => {
+                setShowPopup(false)
+              }, 2000)
+
+              document.querySelector('.dot-button-popup').style.transform = 'scale(1)'
+              document.querySelector('.dot-button-popup').style.backgroundColor = 'black'
+            }}
+          >
+            {[
+              {
+                tone: 'Casual',
+                prompt: `Without changing the language, your task is to rewrite the most recent response to have a casual tone that conveys a sense of informality and friendliness.  Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+              },
+              {
+                tone: 'Straightforward',
+                prompt: `Without changing the language, your task is to rewrite the most recent response to have a straightforward tone, make it clear and direct, avoid euphemisms or indirect statements, use simple vocabulary, be honest, and be transparent , with no deceptive or hidden meaning.
+                Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes. `,
+              },
+              {
+                tone: 'Friendly',
+                prompt: `Without changing the language, your task to rewrite the most recent response to have a friendly tone, containing pleasant and upbeat vocabulary, as well as positive and encouraging statements. Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+              },
+              {
+                tone: 'Shorter',
+                prompt: `Without changing the language, your task is to condense the most recent response while preserving its tone and all essential information. Ensure that the output remains in the same language and retains all important points, but make it shorter. Provide only the condensed version, No fillers. Do not wrap responses in quotes.`,
+              },
+              {
+                tone: 'Longer',
+                prompt: `Without altering the language used, your task is to expand upon the most recent response, providing additional details or elaborating on the existing content. Maintain the original tone and ensure that all pertinent information is included. The objective is to create a more comprehensive and detailed version of the original response while adhering to the same language and retaining its essence. Provide the extended version, ensuring that no essential points are omitted and avoiding any unnecessary fillers or alterations. Do not wrap responses in quotes.`,
+              },
+              {
+                tone: 'Professional',
+                prompt: `Without changing the language, your task is to rewrite the most recent response to have a professional tone that conveys a sense of formality, respect, competence, and credibility.  Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+              },
+              {
+                tone: 'Confident',
+                prompt: `Without changing the language, your task is to rewrite the most recent response to have a confident tone, containing assertive and positive word choices, as well as direct and concise statements. Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+              },
+            ].map((option) => (
+              <div
+                key={option['tone']}
+                style={{
+                  cursor: 'pointer',
+                  padding: '6px 10px',
+                  fontSize: '13px',
+                  fontFamily: 'Arial, sans-serif',
+                  transition: 'transform 0.3s, background-color 0.3s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'whitesmoke'
+                  e.currentTarget.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white'
+                  e.currentTarget.style.transform = 'scale(1)'
+                }}
+                onClick={() => {
+                  setValue(option.prompt)
+                  setShowPopup(false)
+                  document.querySelector('.dot-button-popup').style.transform = 'scale(1)'
+                  document.querySelector('.dot-button-popup').style.backgroundColor = 'black'
+
+                  onSubmit(option.prompt)
+                  setValue('')
+
+                  // Post 1 second scroll to bottom
+                  setTimeout(() => {
+                    document.querySelector('.markdown-body').scrollTop =
+                      document.querySelector('.markdown-body').scrollHeight
+                  }, 1000)
+                }}
+              >
+                {option['tone']}
+              </div>
+            ))}
+          </div>
+        )}
         <textarea
           dir="auto"
           ref={inputRef}
-          disabled={false}
+          disabled={!enabled}
           className="interact-input"
           style={
             internalReverseResizeDir
@@ -108,7 +235,9 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
               : t('Type your question here\nEnter to stop generating\nShift + Enter to break line')
           }
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value)
+          }}
           onKeyDown={handleKeyDownOrClick}
         />
       </div>

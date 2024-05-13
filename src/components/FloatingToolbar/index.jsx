@@ -179,33 +179,29 @@ function FloatingToolbar(props) {
     }
   }
 
-  const handleAskSendClick = async () => {
-    let p = getClientPosition(props.container)
-    p.x = p.x - 200
-    props.container.style.position = 'fixed'
+  const handleAskSendClick = useCallback(async () => {
+    let p = getClientPosition(props.container, true)
+    p.x = p.x - 250
+    p.y = p.y - 100
+    p = ensureFloatingToolbarVisibilityInsideScreen(p, props.container)
+
+    props.container.style.position = 'absolute'
+    props.container.style.left = `${p.x}px`
+    props.container.style.top = `${p.y}px`
     setPosition(p)
 
-    let askPrompt = ''
-
-    if (includeSelection) {
-      askPrompt = `Perform the task independently of the preceding discussion and context. Please thoroughly perform the suggested task below on the text. Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the same language (in other words don't change the language).
-      - Task to perform: ${askInputText}
-      - Context on which to perform the task : ${selection}
-      `
-    } else {
-      askPrompt =
-        `Perform the task independently of the preceding discussion and context. Please provide a thorough response to the following question delimited by triple quotes below without enclosing your answers in quotation marks. Use the same language style as the given text. Utilize available online resources and your extensive training data to ensure a well-informed and comprehensive answer: """` +
-        askInputText +
-        `"""`
-    }
-
-    // console.log(askPrompt)
+    let askPrompt = includeSelection
+      ? `Perform the task independently of the preceding discussion and context. Please thoroughly perform the suggested task below on the text. Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the same language (in other words don't change the language).
+        - Task to perform: ${askInputText}
+        - Context on which to perform the task: ${selection}`
+      : `Perform the task independently of the preceding discussion and context. Please provide a thorough response to the following question delimited by triple quotes below without enclosing your answers in quotation marks. Use the same language style as the given text. Utilize available online resources and your extensive training data to ensure a well-informed and comprehensive answer: "${askInputText}"`
+    console.log(askPrompt)
 
     setPrompt(askPrompt)
     setTriggered(true)
     setAskInputText('')
     setAskPopupVisible(false)
-  }
+  }, [props.container, includeSelection, askInputText, selection]) // Dependencies
 
   const handleTextareaHeightChange = (maxHeight) => (event) => {
     const textarea = event.target
@@ -239,19 +235,23 @@ function FloatingToolbar(props) {
     [selection, props.container],
   )
 
-  const handleReplyAsEmail = () => {
-    const p = getClientPosition(props.container)
-    p.x = p.x - 200
+  const handleReplyAsEmail = useCallback(() => {
+    let p = getClientPosition(props.container, true)
+    p.x -= 250
+    p.y -= 100
+    p = ensureFloatingToolbarVisibilityInsideScreen(p, props.container)
 
-    props.container.style.position = 'fixed'
+    props.container.style.position = 'absolute'
+    props.container.style.left = `${p.x}px`
+    props.container.style.top = `${p.y}px`
     setPosition(p)
 
     let askPrompt =
       `Perform the task independently of the preceding discussion and context. Act as ${PersonalChatGPTBoxConfig.full_name}, a software engineer. You have received an email, shown below in triple quotes. Please provide a detailed and professional reply to this email. Always reply as if you are ${PersonalChatGPTBoxConfig.first_name}. If a 'Email Reply Context' is provided, incorporate it into your response to ensure accuracy and relevance. If no additional context is provided, base your response solely on the content of the email. 
 
       \n Extra information about ${PersonalChatGPTBoxConfig.full_name}'s background and context, it's just for reference if needed while replying. But 'Chat Reply Context' if provided will always be more important.
-      ${PersonalChatGPTBoxConfig.resume_content} 
-      
+      ${PersonalChatGPTBoxConfig.resume_content}
+
       \n Instructions : 
       Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response:
 
@@ -269,13 +269,17 @@ function FloatingToolbar(props) {
     setTriggered(true)
     setReplyOptionsVisible(false)
     setReplyContext('')
-  }
+  }, [props.container, selection, replyContext]) // Include all relevant dependencies
 
-  const handleReplyAsChat = () => {
-    const p = getClientPosition(props.container)
-    p.x = p.x - 200
+  const handleReplyAsChat = useCallback(() => {
+    let p = getClientPosition(props.container, true)
+    p.x -= 250
+    p.y -= 100
+    p = ensureFloatingToolbarVisibilityInsideScreen(p, props.container)
 
-    props.container.style.position = 'fixed'
+    props.container.style.position = 'absolute'
+    props.container.style.left = `${p.x}px`
+    props.container.style.top = `${p.y}px`
     setPosition(p)
 
     let askPrompt =
@@ -283,7 +287,6 @@ function FloatingToolbar(props) {
 
       \n Extra information about ${PersonalChatGPTBoxConfig.full_name}'s background and context, it's just for reference if needed while replying. But 'Chat Reply Context' if provided will always be more important.
       ${PersonalChatGPTBoxConfig.resume_content}
-
 
       \n Instructions : 
       Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Avoid filler or extra text. Do not attempt to respond to each word in the received message. Match the language style of the received message, reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response:
@@ -304,7 +307,7 @@ function FloatingToolbar(props) {
     setTriggered(true)
     setReplyOptionsVisible(false)
     setReplyContext('')
-  }
+  }, [props.container, selection, replyContext]) // Add all variables that the function depends on
 
   const openReplyPopup = (type) => {
     setReplyType(type)

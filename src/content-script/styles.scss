@@ -99,6 +99,7 @@
     color: var(--font-color);
     overflow-y: auto;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 
     ::-webkit-scrollbar {
       background-color: var(--theme-color);

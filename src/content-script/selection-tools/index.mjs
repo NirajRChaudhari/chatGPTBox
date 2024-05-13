@@ -57,7 +57,7 @@ export const config = {
     label: 'Improve',
     genPrompt: createGenPrompt({
       message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes below and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience.
-        Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).`,
+        Only give me the output and nothing else. Do not wrap responses in quotes.No fillers. Respond in the the same language(in other words don't change the language).`,
     }),
   },
   fixError: {
@@ -65,8 +65,7 @@ export const config = {
     label: 'Fix Error',
     genPrompt: createGenPrompt({
       message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience. Reorder the sentences and rephrase the text. Keep text relatively consise without loosing any important information.
-      Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).
-      Text to perform task is given in triple quotes below:`,
+      Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).No fillers. Text to perform task is given in triple quotes below:`,
     }),
   },
   assistant: {
@@ -108,7 +107,7 @@ export const config = {
     icon: <ArrowsCollapse style={{ ...commonStyle }} />,
     label: 'Shorter',
     genPrompt: createGenPrompt({
-      message: `Rewrite the text delimited by triple quotes and output it shorter to be no more than half the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else.Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the following text:
+      message: `Rewrite the text delimited by triple quotes and output it shorter to be no more than half the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else.Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. 
       Text to perform task is given in triple quotes below:`,
     }),
   },
@@ -116,7 +115,8 @@ export const config = {
     icon: <ArrowsAngleExpand style={{ ...commonStyle }} />,
     label: 'Longer',
     genPrompt: createGenPrompt({
-      message: `Rewrite the text delimited by triple quotes and output it longer to be more than twice the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else. Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the following text: `,
+      message: `Rewrite the text delimited by triple quotes and output it longer to be more than twice the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else. Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. 
+      Text to perform task is given in triple quotes below:`,
     }),
   },
   translate: {
@@ -155,7 +155,7 @@ export const config = {
     label: 'Summary',
     genPrompt: createGenPrompt({
       message: `You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the text delimited by triple quotes and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points.
-      Only give me the output and nothing else. Do not wrap responses in quotes. Text to perform task is given in triple quotes below:`,
+      Only give me the output and nothing else. Do not wrap responses in quotes. No fillers. Text to perform task is given in triple quotes below:`,
       includeLanguagePrefix: true,
     }),
   },
