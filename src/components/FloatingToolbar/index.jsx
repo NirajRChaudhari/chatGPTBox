@@ -260,7 +260,7 @@ function FloatingToolbar(props) {
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\n Reply Context for my reply to above received Email : ${replyContext}`
+        ? `\n Important Reply Context for my reply to above received Email : "${replyContext}"`
         : '')
 
     console.log(askPrompt)
@@ -296,7 +296,7 @@ function FloatingToolbar(props) {
       selection +
       `"""` +
       (replyContext && replyContext.trim().length > 0
-        ? `\n Reply Context for my reply to above received Message: ${replyContext}`
+        ? `\n Important Reply Context for my reply to above received Message: "${replyContext}"`
         : '') +
       `\n\n 
       `
