@@ -77,7 +77,7 @@ export const config = {
       Summary of ${PersonalChatGPTBoxConfig.full_name}'s resume:
       ${PersonalChatGPTBoxConfig.resume_content}
       
-      Answer the below prompt, when responding as ${PersonalChatGPTBoxConfig.first_name}, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable. Only give me the output as consise paragraphs and nothing else, no filler text. Do not wrap responses in quotes.
+      Answer the below prompt, when responding as ${PersonalChatGPTBoxConfig.first_name}, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable. Only give me the output as consise message/answer and nothing else, no filler text. Do not wrap responses in quotes.
       
       \n Prompt to Answer is given in triple quotes below:`,
       includeLanguagePrefix: true,
