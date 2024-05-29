@@ -64,8 +64,7 @@ export const config = {
     icon: <CheckCircleFill style={{ ...commonStyle }} />,
     label: 'Fix Error',
     genPrompt: createGenPrompt({
-      message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience. Reorder the sentences and rephrase the text. Keep text relatively consise without loosing any important information.
-      Only give me the output and nothing else. Do not wrap responses in quotes. Respond in the the same language(in other words don't change the language).No fillers. Text to perform task is given in triple quotes below:`,
+      message: `You are a highly skilled AI trained in language understanding and writing improvement. Read the text delimited by triple quotes and make improvements to it, including any grammatical corrections or enhancements to sentence flow. Retain the original meaning and structure, keeping a similar character length and format for a coherent and readable experience. Only provide the output and nothing else. Do not wrap responses in quotes. Respond in the same language. No fillers. The text to improve is given below in triple quotes:`,
     }),
   },
   assistant: {
