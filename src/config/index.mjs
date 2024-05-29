@@ -444,15 +444,15 @@ export const PersonalChatGPTBoxConfig = {
   portfolio: 'https://niraj-chaudhari.github.io/', //Remove this line if you don't have a portfolio don't keep portfolio link empty or null
   resume_content: `Technical Skills:
   - Programming Languages: Java, Python, JavaScript, C++, C#, TypeScript
-  - Frameworks: Spring Boot, Django, .NET
+  - Frameworks: Spring Boot, Flask, .NET, Node.js
   - Frontend: Angular, HTML, CSS, ReactJS
   - Databases: MySQL, MongoDB, Firebase, Redis, Oracle, PostgreSQL
   - Technologies: GitHub, Jenkins, Docker, Kubernetes, Pytorch, XML, OpenCV, Kafka, AWS, Android, Google Cloud
   
   Experience:
-  - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Lab, reduced response latency by 18%, integrated a Python GBM machine learning model, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
-  - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, engaged in DevOps using Docker, Jenkins, and Spinnaker, and documented designs on Confluence.
-  - Software Engineer Intern at Proxel Solutions: Developed an Inventory Management and Analytics System, reduced manual processing by 35%, built Node.js backend, designed MySQL database schema, and utilized Git and Jira for version control and work management.
+  - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Product, reduced response latency by 18%, integrated a Python GBM machine learning model, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
+  - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, built Angular UI frontend, engaged in DevOps using Docker, Jenkins, and Spinnaker, Devops followed Agile practise and documented designs on Confluence.
+  - Software Engineer Intern at Proxel Solutions: Developed an Inventory Management and Analytics System, reduced manual processing by 35%, built Node.js backend and React.js UI deployed on AWS, designed MySQL database schema, and utilized Git and Jira for version control and work management.
   
   Education:
   - University of Southern California: M.Sc. in Computer Science, GPA: 3.95/4
@@ -460,7 +460,7 @@ export const PersonalChatGPTBoxConfig = {
   
   Projects:
   - AI-based S4 Algorithm: Developed for detecting copy-move forgery, active from Aug 2022 to Apr 2024.
-  - Signora Air Signature Library Demo: Utilizes Angular, Node.js, MediaPipe AI, and OpenCV to create a digital signature platform that allows gesture-based air signatures for increased security and convenience.
+  - Signora Air Signature Library : Utilizes Computer Vision, Angular, Node.js, MediaPipe AI, and OpenCV to create a digital signature platform that allows gesture-based air signatures for increased security and convenience.
   - Event Horizon: A Node.js and Angular-based web application for event aggregation and search, featuring cross-platform capabilities and integration with ticket-selling APIs, hosted on Google Cloud.
   - Roomic Android Application: A real-time Android app using GitHub, Java, and Firebase, designed to assist in finding apartments and roommates in new cities based on user preferences.
   
