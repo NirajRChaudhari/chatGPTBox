@@ -290,6 +290,7 @@ export const defaultConfig = {
     'juejin',
     'mp.weixin.qq',
     'followin',
+    'arxiv',
   ],
   accessToken: '',
   tokenSavedOn: 0,
@@ -347,6 +348,7 @@ export const defaultConfig = {
     'juejin',
     'mp.weixin.qq',
     'followin',
+    'arxiv',
   ],
 }
 
