@@ -278,6 +278,15 @@ export const defaultConfig = {
     'translate',
     'code',
   ],
+  customSelectionTools: [
+    {
+      name: '',
+      iconKey: 'explain',
+      prompt:
+        'Explain the following in great detail and in a way that is easy to understand :  {{selection}}',
+      active: false,
+    },
+  ],
   activeSiteAdapters: [
     'bilibili',
     'github',
