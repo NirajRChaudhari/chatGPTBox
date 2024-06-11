@@ -461,8 +461,8 @@ export const PersonalChatGPTBoxConfig = {
   - Technologies: GitHub, Jenkins, Docker, Kubernetes, Pytorch, XML, OpenCV, Kafka, AWS, Android, Google Cloud
   
   Experience:
-  - Software Developer at USC: Developed Node.js backend REST APIs for Health AI Product, reduced response latency by 18%, integrated a Python GBM machine learning model to generate AI-driven insights on healthcare database, revamped Angular frontend with a 26% user engagement increase, deployed on Google Cloud, and set up Prometheus and Grafana monitoring.
-  - Software Engineer at Infosys Pvt.: Built Java Spring Boot RESTful APIs for Finacle, led the transition to microservices architecture, built Angular UI frontend, engaged in DevOps using Docker, Jenkins, and Spinnaker, Devops followed Agile practise and documented designs on Confluence.
+  - Software Developer at USC: Developed Node.js backend REST APIs for an eHealth platform, streamlining access to AI-driven insights and reducing response latency by 18%,integrated a Python GBM machine learning model trained on healthcare database,enhancing predictive analytics,revamped Angular frontend with a 26% user engagement increase, orchestrated CI/CD pipeline for deployment, and set up Prometheus and Grafana monitoring and visualization.
+  - Software Engineer at Infosys Pvt.: Built scalable Java Spring Boot RESTful APIs for Finacle, a global fintech product used by 105 banks across 32 countries, led the transition to microservices architecture, built Angular UI frontend, engaged in DevOps using Docker, Jenkins, and Spinnaker, Devops followed Agile practise and documented designs on Confluence.
   - Software Engineer Intern at Proxel Solutions: Developed an E-commerce Platform for a large-scale franchise, hosted on cloud, boosting transaction volume by 35%, built Node.js backend and React.js UI deployed on AWS, designed MySQL database schema, and utilized Git and Jira for version control and work management.
   
   Education:
