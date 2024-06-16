@@ -195,7 +195,12 @@ function FloatingToolbar(props) {
         - Task to perform: ${askInputText}
         - Context on which to perform the task: ${selection}`
       : `Perform the task independently of the preceding discussion and context. Please provide a thorough response to the following question delimited by triple quotes below without enclosing your answers in quotation marks. Use the same language style as the given text. Utilize available online resources and your extensive training data to ensure a well-informed and comprehensive answer: "${askInputText}"`
+
     console.log(askPrompt)
+
+    if (includeSelection) {
+      navigator.clipboard.writeText(askInputText)
+    }
 
     setPrompt(askPrompt)
     setTriggered(true)
@@ -263,6 +268,10 @@ function FloatingToolbar(props) {
         ? `\n Important Reply Context for my reply to the above received Email: "${replyContext}"`
         : '')
 
+    if (replyContext && replyContext.trim().length > 0) {
+      navigator.clipboard.writeText(replyContext)
+    }
+
     console.log(askPrompt)
 
     setPrompt(askPrompt)
@@ -300,6 +309,10 @@ function FloatingToolbar(props) {
         : '') +
       `\n\n 
     `
+
+    if (replyContext && replyContext.trim().length > 0) {
+      navigator.clipboard.writeText(replyContext)
+    }
 
     console.log(askPrompt)
 
