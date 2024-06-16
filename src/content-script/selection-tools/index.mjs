@@ -11,6 +11,7 @@ import {
   Magic,
   ArrowsCollapse,
   ArrowsAngleExpand,
+  QuestionSquare,
 } from 'react-bootstrap-icons'
 import { getPreferredLanguage } from '../../config/language.mjs'
 import { PersonalChatGPTBoxConfig } from '../../config/index.mjs'
@@ -80,6 +81,13 @@ export const config = {
       
       \n Prompt to Answer is given in triple quotes below:`,
       includeLanguagePrefix: true,
+    }),
+  },
+  answer: {
+    icon: <QuestionSquare style={{ ...commonStyle }} />,
+    label: 'Answer',
+    genPrompt: createGenPrompt({
+      message: `You are a highly skilled AI trained to answer any questions. I would like you to read the text delimited by triple quotes and answer the question. Access your trained knowledge or internet resources to correctly answer the question. Cross-check your answer and provide a comprehensive response. Provide a clear response that addresses the question directly. Do not wrap responses in quotes. Respond in the same language variety or dialect of the given text.`,
     }),
   },
   explain: {
