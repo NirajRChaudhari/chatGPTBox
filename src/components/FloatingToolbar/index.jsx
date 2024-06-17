@@ -20,6 +20,7 @@ import { Models, PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
 import { CopilotIcon } from '@primer/octicons-react'
 import { ensureFloatingToolbarVisibilityInsideScreen } from '../../utils/ensure-floating-toolbar-visibility-inside-screen'
+import { Resizable } from 're-resizable'
 
 function FloatingToolbar(props) {
   const { t } = useTranslation()
@@ -42,8 +43,12 @@ function FloatingToolbar(props) {
   const [replyType, setReplyType] = useState(null) // 'email' or 'chat'
   const [replyPopupVisible, setReplyPopupVisible] = useState(false)
 
+  let widthFactorOfScreen = 0.45
+
   const windowSize = useClampWindowSize([750, 1500], [0, Infinity])
   const config = useConfig()
+
+  const [currentWidth, setCurrentWidth] = useState(windowSize[0] * widthFactorOfScreen) // initial width
 
   useEffect(() => {
     setRender(true)
@@ -341,8 +346,6 @@ function FloatingToolbar(props) {
   }, [replyType, handleReplyAsEmail, handleReplyAsChat])
 
   if (triggered) {
-    let widthFactorOfScreen = 0.45
-
     // console.log('Initial Box ', position, windowSize, virtualPosition)
     const updatePosition = useCallback(() => {
       // const newPosition = setElementPositionInViewport(props.container, position.x, position.y)
@@ -391,23 +394,36 @@ function FloatingToolbar(props) {
           onStop={dragEvent.onStop}
           position={virtualPosition}
         >
-          <div
-            className="chatgptbox-selection-window"
-            style={{ width: `${windowSize[0] * widthFactorOfScreen}px` }}
+          <Resizable
+            minWidth={`${windowSize[0] * widthFactorOfScreen}px`}
+            onResize={(event, direction, ref) => {
+              setCurrentWidth(ref.style.width)
+            }}
+            onResizeStop={(event, direction, ref) => {
+              setCurrentWidth(ref.style.width) // update currentWidth to the new width after resizing
+            }}
           >
-            <div className="chatgptbox-container">
-              <ConversationCard
-                session={session}
-                question={prompt}
-                draggable={true}
-                closeable={closeable}
-                onClose={onClose}
-                dockable={props.dockable}
-                onUpdate={onUpdate}
-                focusedInput={props.focusedInput}
-              />
+            <div
+              className="chatgptbox-selection-window"
+              style={{
+                width: currentWidth,
+                minWidth: `${windowSize[0] * widthFactorOfScreen}px`,
+              }}
+            >
+              <div className="chatgptbox-container">
+                <ConversationCard
+                  session={session}
+                  question={prompt}
+                  draggable={true}
+                  closeable={closeable}
+                  onClose={onClose}
+                  dockable={props.dockable}
+                  onUpdate={onUpdate}
+                  focusedInput={props.focusedInput}
+                />
+              </div>
             </div>
-          </div>
+          </Resizable>
         </Draggable>
       </div>
     )
