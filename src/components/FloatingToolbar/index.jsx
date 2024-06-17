@@ -402,6 +402,16 @@ function FloatingToolbar(props) {
             onResizeStop={(event, direction, ref) => {
               setCurrentWidth(ref.style.width) // update currentWidth to the new width after resizing
             }}
+            enable={{
+              top: false,
+              right: true,
+              bottom: false,
+              left: true,
+              topRight: false,
+              bottomRight: false,
+              bottomLeft: false,
+              topLeft: false,
+            }}
           >
             <div
               className="chatgptbox-selection-window"
