@@ -1382,8 +1382,8 @@
     line-height: 1.6em;
     right: 1.1em;
     cursor: pointer;
-    background-color: darkgoldenrod;
-    color: white;
+    background-color: goldenrod;
+    color: black;
     border: 1px solid;
     border-radius: 6px;
     border-color: rgba(31, 35, 40, 0.15);
@@ -1392,7 +1392,7 @@
   }
 
   .submit-button:hover {
-    color: black;
+    color: white;
     transform: scale(1.1); /* Scales up the button by 10% */
   }
 

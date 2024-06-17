@@ -91,27 +91,24 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
           className="dot-button-popup"
           style={{
             position: 'absolute',
-            marginTop: '5px',
-            right: '5px',
-            width: '12px',
-            height: '12px',
-            borderRadius: '50%',
+            bottom: '6px',
+            left: '15px',
+            fontSize: '10px',
+            padding: '2px 5px',
+            backgroundColor: 'goldenrod',
+            borderRadius: '5px',
             border: 'none',
-            backgroundColor: 'black',
             transition: 'transform 0.3s, background-color 0.3s',
           }}
-          onMouseEnter={(e) => {
+          onMouseEnter={() => {
             togglePopup()
-            e.target.style.transform = 'scale(1.3)'
-            e.target.style.backgroundColor = 'goldenrod'
           }}
-          onMouseLeave={(e) => {
+          onMouseLeave={() => {
             if (showPopup) return
-
-            e.target.style.transform = 'scale(1)'
-            e.target.style.backgroundColor = 'black'
           }}
-        />
+        >
+          Improve
+        </button>
         {showPopup && (
           <div
             className="popup"
@@ -119,23 +116,20 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
               display: 'flex',
               flexDirection: 'column',
               position: 'absolute',
-              right: '20px',
+              left: '0px',
               backgroundColor: 'white',
               border: 'none',
               boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
               zIndex: '999999',
               overflowY: 'auto', // Change overflow to 'auto' for vertical scrollbar
               maxHeight: '200px',
-              marginTop: '-110px',
+              marginTop: '-105px',
               borderRadius: '6px',
             }}
             onMouseLeave={() => {
               setTimeout(() => {
                 setShowPopup(false)
               }, 2000)
-
-              document.querySelector('.dot-button-popup').style.transform = 'scale(1)'
-              document.querySelector('.dot-button-popup').style.backgroundColor = 'black'
             }}
           >
             {[
@@ -189,8 +183,6 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
                 onClick={() => {
                   setValue(option.prompt)
                   setShowPopup(false)
-                  document.querySelector('.dot-button-popup').style.transform = 'scale(1)'
-                  document.querySelector('.dot-button-popup').style.backgroundColor = 'black'
 
                   onSubmit(option.prompt)
                   setValue('')
@@ -244,7 +236,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
       <button
         className="submit-button"
         style={{
-          backgroundColor: enabled ? 'darkgoldenrod' : 'green',
+          backgroundColor: enabled ? 'goldenrod' : 'lightcoral',
         }}
         onClick={handleKeyDownOrClick}
       >
