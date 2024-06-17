@@ -337,6 +337,7 @@ export const defaultConfig = {
     'Fix Error',
     'Assistant',
     'Improve Writing',
+    'Answer',
     'Make Shorter',
     'Make Longer',
     'Translate',
