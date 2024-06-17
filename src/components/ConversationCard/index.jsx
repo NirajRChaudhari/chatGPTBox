@@ -49,7 +49,34 @@ function ConversationCard(props) {
   const [port, setPort] = useState(() => Browser.runtime.connect())
   const [session, setSession] = useState(props.session)
   const windowSize = useClampWindowSize([750, 1500], [250, 1100])
+
+  const [isResizing, setIsResizing] = useState(false)
   const bodyRef = useRef(null)
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (isResizing) {
+        for (let entry of entries) {
+          entry.target.style.maxHeight = `${entry.target.scrollHeight}px`
+        }
+      }
+    })
+
+    resizeObserver.observe(bodyRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [isResizing])
+
+  const handleMouseDown = () => {
+    setIsResizing(true)
+  }
+
+  const handleMouseUp = () => {
+    setIsResizing(false)
+    bodyRef.current.style.maxHeight = `${bodyRef.current.scrollHeight}px`
+  }
+
   const [completeDraggable, setCompleteDraggable] = useState(false)
   // `.some` for multi mode models. e.g. bingFree4-balanced
   const useForegroundFetch = bingWebModelKeys.some((n) => session.modelName.includes(n))
@@ -560,11 +587,9 @@ function ConversationCard(props) {
       <div
         ref={bodyRef}
         className="markdown-body"
-        style={
-          props.notClampSize
-            ? { flexGrow: 1 }
-            : { maxHeight: windowSize[1] * 0.55 + 'px', resize: 'vertical' }
-        }
+        style={{ maxHeight: windowSize[1] * 0.55 + 'px', resize: 'vertical', overflow: 'auto' }}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
       >
         {conversationItemData.map((data, idx) => (
           <ConversationItem
