@@ -12,9 +12,9 @@ import {
   CpuFill,
   ArrowRightCircleFill,
   ReplyAllFill,
-  ChatLeftText,
   ChevronBarDown,
   EnvelopeAt,
+  ChatQuote,
 } from 'react-bootstrap-icons' // Import CpuFill along with ThreeDots
 import { Models, PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 import ReactTooltip from 'react-tooltip' // Import ReactTooltip
@@ -503,7 +503,7 @@ function FloatingToolbar(props) {
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.color = 'darkgoldenrod'
-                  e.target.style.transform = 'scale(1.1)'
+                  e.target.style.transform = 'scale(1.2)'
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.color = 'goldenrod'
@@ -514,14 +514,12 @@ function FloatingToolbar(props) {
             <div
               className="chatgptbox-selection-toolbar-button"
               style={{
-                height: '100%',
-                marginRight: '3px',
-                marginLeft: '5px',
+                padding: '0px 6px',
                 transition: 'transform 0.3s ease, color 0.2s ease',
               }}
               onClick={toggleAskPopup}
               onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.1)'
+                e.target.style.transform = 'scale(1.2)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)'
@@ -588,7 +586,20 @@ function FloatingToolbar(props) {
                 setReplyPopupVisible(false)
               }}
             >
-              <ReplyAllFill size={20} style={{ marginLeft: '5px', marginRight: '5px' }} />
+              <ReplyAllFill
+                size={20}
+                style={{
+                  marginLeft: '5px',
+                  marginRight: '5px',
+                  transition: 'transform 0.3s ease, color 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.2)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+              />
             </div>
             {visibleTools.map((tool, index) => (
               <div
@@ -599,7 +610,7 @@ function FloatingToolbar(props) {
                 data-for={`toolTooltip-${index}`} // Set a unique tooltip ID for each tool
                 style={{ transition: 'transform 0.3s ease, color 0.2s ease' }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.1)'
+                  e.target.style.transform = 'scale(1.2)'
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'scale(1)'
@@ -632,13 +643,13 @@ function FloatingToolbar(props) {
                     transition: 'transform 0.3s ease, color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'scale(1.1)'
+                    e.target.style.transform = 'scale(1.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'scale(1)'
                   }}
                 >
-                  <ChatLeftText size={22} />
+                  <ChatQuote size={22} />
                 </div>
                 <div
                   className="chatgptbox-selection-toolbar-button"
@@ -651,7 +662,7 @@ function FloatingToolbar(props) {
                     transition: 'transform 0.3s ease, color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'scale(1.1)'
+                    e.target.style.transform = 'scale(1.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'scale(1)'
@@ -725,7 +736,6 @@ function FloatingToolbar(props) {
 
             <div
               className="chatgptbox-selection-toolbar-button"
-              style={{ height: '100%' }}
               onMouseEnter={handleMouseEnterHiddenTools}
               onMouseLeave={handleMouseLeaveHiddenTools}
             >
@@ -781,7 +791,7 @@ function FloatingToolbar(props) {
               transition: 'transform 0.3s ease, color 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.transform = 'scale(1.1)'
+              e.target.style.transform = 'scale(1.2)'
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'scale(1)'

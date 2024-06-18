@@ -174,7 +174,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'whitesmoke'
-                  e.currentTarget.style.transform = 'scale(1.1)'
+                  e.currentTarget.style.transform = 'scale(1.2)'
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'white'
