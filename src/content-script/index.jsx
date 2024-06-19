@@ -135,7 +135,7 @@ const checkIfClickedInsideToolbar = (toolbarContainer, e) => {
 
   if (
     toolbarContainer &&
-    (toolbarContainer.contains(e.target) ||
+    ((toolbarContainer instanceof Node && toolbarContainer.contains(e.target)) ||
       (document.querySelector('.chatgptbox-template-popup-container') && isTemplatePopupContainer))
   ) {
     return true
