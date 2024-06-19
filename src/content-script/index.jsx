@@ -120,6 +120,30 @@ async function getInput(inputQuery) {
 }
 
 let toolbarContainer
+
+const checkIfClickedInsideToolbar = (toolbarContainer, e) => {
+  // Search for all .chatgptbox-template-popup-container and check if the target is inside any of them
+
+  let isTemplatePopupContainer = false
+  const templatePopupContainers = document.querySelectorAll('.chatgptbox-template-popup-container')
+  for (let i = 0; i < templatePopupContainers.length; i++) {
+    if (templatePopupContainers[i].contains(e.target)) {
+      isTemplatePopupContainer = true
+      break
+    }
+  }
+
+  if (
+    toolbarContainer &&
+    (toolbarContainer.contains(e.target) ||
+      (document.querySelector('.chatgptbox-template-popup-container') && isTemplatePopupContainer))
+  ) {
+    return true
+  } else {
+    return false
+  }
+}
+
 const deleteToolbar = () => {
   if (toolbarContainer && toolbarContainer.className === 'chatgptbox-toolbar-container')
     toolbarContainer.remove()
@@ -166,13 +190,13 @@ async function prepareForSelectionTools() {
     }
 
     // If the toolbar is already open, and the click is inside the toolbar, do nothing
-    if (toolbarContainer && toolbarContainer.contains(e.target)) return
+    if (checkIfClickedInsideToolbar(toolbarContainer, e)) return
 
     const selectionElement =
       window.getSelection()?.rangeCount > 0 &&
       window.getSelection()?.getRangeAt(0).endContainer.parentElement
 
-    if (toolbarContainer && selectionElement && toolbarContainer.contains(selectionElement)) return
+    if (selectionElement && checkIfClickedInsideToolbar(toolbarContainer, selectionElement)) return
 
     deleteToolbar()
     setTimeout(async () => {
@@ -217,7 +241,7 @@ async function prepareForSelectionTools() {
     }
 
     // If the toolbar is already open, and the click is inside the toolbar, do nothing
-    if (toolbarContainer && toolbarContainer.contains(e.target)) return
+    if (checkIfClickedInsideToolbar(toolbarContainer, e)) return
 
     // If toolbar is docked, do nothing
     if (
@@ -291,11 +315,13 @@ async function prepareForSelectionTools() {
 
 async function prepareForSelectionToolsTouch() {
   document.addEventListener('touchend', (e) => {
-    if (toolbarContainer && toolbarContainer.contains(e.target)) return
+    if (checkIfClickedInsideToolbar(toolbarContainer, e)) return
     if (
-      toolbarContainer &&
-      window.getSelection()?.rangeCount > 0 &&
-      toolbarContainer.contains(window.getSelection()?.getRangeAt(0).endContainer.parentElement)
+      checkIfClickedInsideToolbar(
+        toolbarContainer,
+        window.getSelection()?.getRangeAt(0).endContainer.parentElement,
+      ) &&
+      window.getSelection()?.rangeCount > 0
     )
       return
 
@@ -317,7 +343,7 @@ async function prepareForSelectionToolsTouch() {
     })
   })
   document.addEventListener('touchstart', (e) => {
-    if (toolbarContainer && toolbarContainer.contains(e.target)) return
+    if (checkIfClickedInsideToolbar(toolbarContainer, e)) return
 
     document.querySelectorAll('.chatgptbox-toolbar-container').forEach((e) => e.remove())
   })

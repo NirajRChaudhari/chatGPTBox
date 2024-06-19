@@ -1,6 +1,6 @@
 export function findClosestEditableAncestor(target) {
   // List of classes of input that should not be focused
-  const excludedClasses = ['chat-box-popup-textarea']
+  const excludedClasses = ['chat-box-popup-textarea', 'template-popup-textarea']
 
   // Check if the target is an excluded class
   if (excludedClasses.some((excludedClass) => target.classList.contains(excludedClass))) {
