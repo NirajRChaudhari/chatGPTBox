@@ -58,14 +58,14 @@ export const config = {
     label: 'Improve',
     genPrompt: createGenPrompt({
       message: `You are a highly skilled AI trained in language understanding and writing improvement. I would like you to read the text delimited by triple quotes below and make improvements to it. Aim to retain the original meaning and structure, keeping similar character length and format, for a coherent and readable experience.
-        Only give me the output and nothing else. Do not wrap responses in quotes.No fillers. Respond in the the same language(in other words don't change the language).`,
+        Only give me the output and nothing else. Do not give any extra reference links or urls in output. Do not wrap responses in quotes.No fillers. Respond in the the same language(in other words don't change the language).`,
     }),
   },
   fixError: {
     icon: <CheckCircleFill style={{ ...commonStyle }} />,
     label: 'Fix Error',
     genPrompt: createGenPrompt({
-      message: `You are a highly skilled AI trained in language understanding and writing improvement. Read the text delimited by triple quotes and make improvements to it, including any grammatical corrections or enhancements to sentence flow. Retain the original meaning and structure, keeping a similar character length and format for a coherent and readable experience. Only provide the output and nothing else. Do not wrap responses in quotes. Respond in the same language. No fillers. The text to improve is given below in triple quotes:`,
+      message: `You are a highly skilled AI trained in language understanding and writing improvement. Read the text delimited by triple quotes and make improvements to it, including any grammatical corrections or enhancements to sentence flow. Retain the original meaning and structure, keeping a similar character length and format for a coherent and readable experience. Only provide the output and nothing else. Do not wrap responses in quotes. Respond in the same language. No fillers. Do not give any extra reference links or urls in output. The text to improve is given below in triple quotes:`,
     }),
   },
   assistant: {
@@ -77,7 +77,7 @@ export const config = {
       Summary of ${PersonalChatGPTBoxConfig.full_name}'s resume:
       ${PersonalChatGPTBoxConfig.resume_content}
       
-      Answer the below prompt, when responding as ${PersonalChatGPTBoxConfig.first_name}, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable. Only give me the output as consise message/answer and nothing else, no filler text. Do not wrap responses in quotes.
+      Answer the below prompt, when responding as ${PersonalChatGPTBoxConfig.first_name}, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable. Only give me the output as consise message/answer and nothing else, no filler text. Do not wrap responses in quotes. Do not give any extra reference links or urls in output other than my portfolio website. 
       
       \n Prompt to Answer is given in triple quotes below:`,
       includeLanguagePrefix: true,
@@ -102,7 +102,7 @@ export const config = {
     icon: <ArrowsCollapse style={{ ...commonStyle }} />,
     label: 'Shorter',
     genPrompt: createGenPrompt({
-      message: `Rewrite the text delimited by triple quotes and output it shorter to be no more than half the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else.Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. 
+      message: `Rewrite the text delimited by triple quotes and output it shorter to be no more than half the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else.Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. Do not give any extra reference links or urls in output. 
       Text to perform task is given in triple quotes below:`,
     }),
   },
@@ -110,7 +110,7 @@ export const config = {
     icon: <ArrowsAngleExpand style={{ ...commonStyle }} />,
     label: 'Longer',
     genPrompt: createGenPrompt({
-      message: `Rewrite the text delimited by triple quotes and output it longer to be more than twice the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else. Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. 
+      message: `Rewrite the text delimited by triple quotes and output it longer to be more than twice the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else. Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. Do not give any extra reference links or urls in output. 
       Text to perform task is given in triple quotes below:`,
     }),
   },
