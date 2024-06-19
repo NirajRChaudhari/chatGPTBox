@@ -68,13 +68,22 @@ function ConversationCard(props) {
     }
   }, [isResizing])
 
-  const handleMouseDown = () => {
-    setIsResizing(true)
+  const handleMouseDown = (event) => {
+    // Check if the event target is the specific div with class "markdown-body"
+    const isTargetMarkdownBody =
+      event.target === bodyRef.current && event.target.className === 'markdown-body'
+
+    if (isTargetMarkdownBody) {
+      setIsResizing(true)
+    }
   }
 
   const handleMouseUp = () => {
-    setIsResizing(false)
-    bodyRef.current.style.maxHeight = `${bodyRef.current.scrollHeight}px`
+    // If resizing was initiated, adjust maxHeight and disable resizing
+    if (isResizing) {
+      setIsResizing(false)
+      bodyRef.current.style.maxHeight = `${bodyRef.current.scrollHeight}px`
+    }
   }
 
   const [completeDraggable, setCompleteDraggable] = useState(false)
@@ -588,7 +597,7 @@ function ConversationCard(props) {
         ref={bodyRef}
         className="markdown-body"
         style={{ maxHeight: windowSize[1] * 0.55 + 'px', resize: 'vertical', overflow: 'auto' }}
-        onMouseDown={handleMouseDown}
+        onMouseDown={(e) => handleMouseDown(e)}
         onMouseUp={handleMouseUp}
       >
         {conversationItemData.map((data, idx) => (
