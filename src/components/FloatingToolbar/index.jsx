@@ -756,6 +756,7 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                     backgroundColor: 'white',
                     padding: '5px',
                     borderRadius: '5px',
+                    height: '25px !important',
                     transition: 'transform 0.3s ease, color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
@@ -775,6 +776,7 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                     padding: '5px',
                     borderRadius: '5px',
                     marginLeft: '4px',
+                    height: '25px !important',
                     transition: 'transform 0.3s ease, color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
