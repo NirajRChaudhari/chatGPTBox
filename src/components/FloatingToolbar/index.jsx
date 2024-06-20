@@ -305,7 +305,7 @@ function FloatingToolbar(props) {
     ${PersonalChatGPTBoxConfig.resume_content}
   
     \n Instructions:
-    Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email. Reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response. Do not give any extra reference links or urls in output. 
+    Your response should not be enclosed in quotation marks. Avoid filler or extra text. Match the language style of the received email. Reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize available online resources and your extensive training data to ensure a professional, well-informed, accurate, and comprehensive email response. 
   
     \n Received Email Message:
     """` +
@@ -337,7 +337,7 @@ function FloatingToolbar(props) {
     ${PersonalChatGPTBoxConfig.resume_content}
   
     \n Instructions:
-    Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Do not attempt to respond to each word in the received message. Match the language style of the received message. Reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response. Do not give any extra reference links or urls in output. 
+    Your response should not be enclosed in quotation marks and should avoid filler or unnecessary text. Do not attempt to respond to each word in the received message. Match the language style of the received message. Reply as if you are ${PersonalChatGPTBoxConfig.first_name} and utilize online resources along with your extensive training data to ensure a well-informed, accurate, and comprehensive chat response.
   
     \n Received Chat Message:
     """` +
@@ -453,7 +453,7 @@ Input Message Text to Update: ${template.message}
 
 Context for Updating above data: ${selection}
 
-Output: Just give updated text; don't give any filler or extra explanation; just give updated text. Do not give any extra reference links or urls in output. `
+Output: Just give updated text; don't give any filler or extra explanation; just give updated text. `
 
     console.log(prompt)
 

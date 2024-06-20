@@ -143,6 +143,8 @@ async function executeApi(session, port, config) {
     // `.some` for multi mode models. e.g. bingFree4-balanced
     bingWebModelKeys.some((n) => session.modelName.includes(n))
   ) {
+    session.question +=
+      ' (Important : Do not include any additional reference links, web search links, resource links, or URLs in the output or at the end of output. Only include my 3D portfolio website link https://nirajrchaudhari.github.io/ in output if necessary in the answer.)'
     const accessToken = await getBingAccessToken()
     if (session.modelName.includes('bingFreeSydney'))
       await generateAnswersWithBingWebApi(port, session.question, session, accessToken, true)
