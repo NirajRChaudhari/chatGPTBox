@@ -25,6 +25,26 @@ import { ensureFloatingToolbarVisibilityInsideScreen } from '../../utils/ensure-
 import { Resizable } from 're-resizable'
 import { ShowTemplatesPopup, AddNewTemplatePopup } from './TemplatePopup'
 
+const getTemplateMessages = (callback) => {
+  // eslint-disable-next-line no-undef
+  chrome.storage.local.get('PersonalChatGPTBoxConfig_templateMessages', function (localResult) {
+    // eslint-disable-next-line no-undef
+    chrome.storage.sync.get('PersonalChatGPTBoxConfig_templateMessages', function (syncResult) {
+      const localMessages = localResult.PersonalChatGPTBoxConfig_templateMessages || []
+      const syncMessages = syncResult.PersonalChatGPTBoxConfig_templateMessages || []
+      callback([...localMessages, ...syncMessages])
+    })
+  })
+}
+
+const saveTemplateMessages = (messages, callback) => {
+  // eslint-disable-next-line no-undef
+  chrome.storage.local.set({ PersonalChatGPTBoxConfig_templateMessages: messages }, function () {
+    // eslint-disable-next-line no-undef
+    chrome.storage.sync.set({ PersonalChatGPTBoxConfig_templateMessages: messages }, callback)
+  })
+}
+
 function FloatingToolbar(props) {
   const { t } = useTranslation()
   const [session, setSession] = useState(props.session)
@@ -81,6 +101,11 @@ function FloatingToolbar(props) {
         document.removeEventListener('selectionchange', selectionListener)
       }
     }
+  }, [])
+
+  useEffect(() => {
+    // Initialize template messages from both storages when the component mounts
+    getTemplateMessages(setTemplateMessages)
   }, [])
 
   useEffect(() => {
@@ -383,15 +408,9 @@ function FloatingToolbar(props) {
     const updatedMessages = [...templateMessages]
     updatedMessages.splice(index, 1)
 
-    // eslint-disable-next-line no-undef
-    chrome.storage.local.set(
-      {
-        PersonalChatGPTBoxConfig_templateMessages: updatedMessages,
-      },
-      () => {
-        setTemplateMessages(updatedMessages)
-      },
-    )
+    saveTemplateMessages(updatedMessages, () => {
+      setTemplateMessages(updatedMessages)
+    })
   }
 
   const handleAddNewTemplate = () => {
@@ -401,16 +420,10 @@ function FloatingToolbar(props) {
     const newTemplate = { message: newMessage, placeholder: newPlaceholder }
     const updatedMessages = [...templateMessages, newTemplate]
 
-    // eslint-disable-next-line no-undef
-    chrome.storage.local.set(
-      {
-        PersonalChatGPTBoxConfig_templateMessages: updatedMessages,
-      },
-      () => {
-        setTemplateMessages(updatedMessages)
-        setAddNewTemplatePopupVisible(false)
-      },
-    )
+    saveTemplateMessages(updatedMessages, () => {
+      setTemplateMessages(updatedMessages)
+      setAddNewTemplatePopupVisible(false)
+    })
   }
 
   const handleTemplateMessage_ToCustomize = useCallback((template) => {
@@ -920,8 +933,11 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                     flexDirection: 'row', // Maintain row direction for horizontal layout
                     flexWrap: 'wrap', // Ensure items can wrap to next line
                     overflowY: 'auto', // Enable vertical scrolling within container
-                    padding: '20px 10px 20px 20px', // Padding around the edges
+                    padding: '20px 10px 20px 30px', // Padding around the edges
                     alignItems: 'center', // Vertically center the child elements
+                    minWidth: '80vw', // Limit width to 80vw
+                    maxHeight: '70vh', // Limit height to 80vh
+                    overflowX: 'hidden', // Hide horizontal overflow
                   }}
                 >
                   {templateMessages.length > 0 ? (
@@ -936,9 +952,9 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                           backgroundColor: '#f0f0f0',
                           borderRadius: '5px',
                           cursor: 'pointer',
-                          flexBasis: 'calc(50% - 20px)', // Adjust width for wrapping
+                          flexBasis: 'calc(30% - 15px)', // Adjust width for wrapping
                           flexGrow: '1', // Allow items to grow to fill space
-                          minWidth: '150px', // Minimum width
+                          minWidth: '200px', // Minimum width
                           textAlign: 'center', // Center text
                           position: 'relative', // Needed for absolute positioning of children
                           transition: 'transform 0.3s ease, color 0.2s ease',
@@ -946,15 +962,26 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                         onClick={() => handleTemplateMessage_ToCustomize(template)}
                         onMouseEnter={(e) => {
                           e.target.style.backgroundColor = 'rgb(220 219 219)'
-                          e.target.style.transform = 'scale(1.05)'
+                          e.target.style.transform = 'scale(1.03)'
                         }}
                         onMouseLeave={(e) => {
                           e.target.style.backgroundColor = '#f0f0f0'
                           e.target.style.transform = 'scale(1)'
                         }}
                       >
-                        <div>{template.placeholder}</div>
-                        <div style={{ fontSize: '12px', color: 'grey' }}>{template.message}</div>
+                        <div style={{ fontSize: '14px', color: 'darkgoldenrod' }}>
+                          {template.placeholder}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '12px',
+                            color: 'black',
+                            whiteSpace: 'pre-wrap',
+                            textAlign: 'justify',
+                          }}
+                        >
+                          {template.message}
+                        </div>
                         <br />
                         <div
                           style={{
@@ -978,6 +1005,16 @@ Output: Just give updated text; don't give any filler or extra explanation; just
                             }}
                             onClick={(event) => {
                               event.stopPropagation() // Prevent event bubbling
+
+                              // Confirm before deleting
+                              if (
+                                !window.confirm(
+                                  'Are you sure you want to delete this template message?',
+                                )
+                              ) {
+                                return
+                              }
+
                               handleDeleteTemplate(index)
                             }}
                           />

@@ -135,7 +135,9 @@ const checkIfClickedInsideToolbar = (toolbarContainer, e) => {
 
   if (
     toolbarContainer &&
-    ((toolbarContainer instanceof Node && toolbarContainer.contains(e.target)) ||
+    ((toolbarContainer instanceof Node &&
+      e.target instanceof Node &&
+      toolbarContainer.contains(e.target)) ||
       (document.querySelector('.chatgptbox-template-popup-container') && isTemplatePopupContainer))
   ) {
     return true
@@ -261,6 +263,7 @@ async function prepareForSelectionTools() {
     // Delete toolbar if the user is typing in an input or textarea
     if (
       toolbarContainer &&
+      e.target instanceof Node &&
       !toolbarContainer.contains(e.target) &&
       findClosestEditableAncestor(e.target)
     ) {
