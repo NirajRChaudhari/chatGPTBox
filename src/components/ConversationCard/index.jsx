@@ -327,6 +327,18 @@ function ConversationCard(props) {
         session.conversationRecords.pop()
       }
     }
+
+    // Update Retry Session
+    if (
+      session &&
+      session.question &&
+      !session.question.startsWith(
+        'Retry and please provide a different version of the above answer.',
+      )
+    ) {
+      session.question =
+        'Retry and please provide a different version of the above answer. ' + session.question
+    }
     const newSession = { ...session, isRetry: true }
     setSession(newSession)
     try {

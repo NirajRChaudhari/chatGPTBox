@@ -65,7 +65,7 @@ export const config = {
     icon: <CheckCircleFill style={{ ...commonStyle }} />,
     label: 'Fix Error',
     genPrompt: createGenPrompt({
-      message: `You are an advanced AI trained in language comprehension and composition. Examine the text enclosed by triple quotes to ensure grammatical accuracy and improve sentence flow. Preserve all correctly used words, while maintaining the original structure. The meaning of the entire message must remain unchanged.  Provide only the revised text without additional commentary. Do not use quotes around your response. Respond in the same language as the input. Avoid fillers. If a word or phrase is already correct, do not alter it. The text for review is provided below within triple quotes:`,
+      message: `You are an advanced AI trained in language comprehension and composition. Examine the text enclosed by triple quotes to ensure grammatical accuracy and improve sentence flow. Preserve all correctly used words, while maintaining the original structure. Provide only the revised text without additional commentary. Do not use quotes around your response. Respond in the same language as the input. Avoid fillers. If a word or phrase is already correct, do not alter it. The text for review is provided below within triple quotes:`,
     }),
   },
   assistant: {
