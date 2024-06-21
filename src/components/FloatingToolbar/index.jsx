@@ -40,7 +40,6 @@ const getTemplateMessages = (callback) => {
         ).values(),
       ]
 
-      console.log(getHardcodedTemplateMessages())
       callback([...uniqueMessages, ...getHardcodedTemplateMessages()])
     })
   })
