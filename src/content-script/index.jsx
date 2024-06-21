@@ -127,7 +127,11 @@ const checkIfClickedInsideToolbar = (toolbarContainer, e) => {
   let isTemplatePopupContainer = false
   const templatePopupContainers = document.querySelectorAll('.chatgptbox-template-popup-container')
   for (let i = 0; i < templatePopupContainers.length; i++) {
-    if (templatePopupContainers[i].contains(e.target)) {
+    if (
+      templatePopupContainers[i] instanceof Node &&
+      e.target instanceof Node &&
+      templatePopupContainers[i].contains(e.target)
+    ) {
       isTemplatePopupContainer = true
       break
     }

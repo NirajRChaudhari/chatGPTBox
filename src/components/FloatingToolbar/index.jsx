@@ -32,17 +32,56 @@ const getTemplateMessages = (callback) => {
     chrome.storage.sync.get('PersonalChatGPTBoxConfig_templateMessages', function (syncResult) {
       const localMessages = localResult.PersonalChatGPTBoxConfig_templateMessages || []
       const syncMessages = syncResult.PersonalChatGPTBoxConfig_templateMessages || []
-      callback([...localMessages, ...syncMessages])
+
+      // Merge local and sync messages and return unique messages, placeholder pairs
+      const uniqueMessages = [
+        ...new Map(
+          [...localMessages, ...syncMessages].map((item) => [item.message, item]),
+        ).values(),
+      ]
+
+      console.log(getHardcodedTemplateMessages())
+      callback([...uniqueMessages, ...getHardcodedTemplateMessages()])
     })
   })
 }
 
 const saveTemplateMessages = (messages, callback) => {
+  let harcodedMessages = getHardcodedTemplateMessages()
+
+  // Remove hardcoded template messages from the list before saving
+  const filteredMessages = messages.filter(
+    (message) =>
+      !harcodedMessages.some((customMessage) => customMessage.message === message.message),
+  )
+
   // eslint-disable-next-line no-undef
-  chrome.storage.local.set({ PersonalChatGPTBoxConfig_templateMessages: messages }, function () {
-    // eslint-disable-next-line no-undef
-    chrome.storage.sync.set({ PersonalChatGPTBoxConfig_templateMessages: messages }, callback)
-  })
+  chrome.storage.local.set(
+    { PersonalChatGPTBoxConfig_templateMessages: filteredMessages },
+    function () {
+      // eslint-disable-next-line no-undef
+      chrome.storage.sync.set(
+        { PersonalChatGPTBoxConfig_templateMessages: filteredMessages },
+        callback,
+      )
+    },
+  )
+}
+
+const getHardcodedTemplateMessages = () => {
+  return [
+    {
+      message: `Hi <<PERSON>>, glad to connect with you.
+
+I am genuinely keen on exploring Software Engineer opportunities at <<COMPANY>>. I have extensive experience in full-stack software development and would truly appreciate it if you could take a look at my 3D portfolio website for an overview of my prior work experience and research projects, for consideration for any potential opportunities in your network.
+
+Thank you for your time and consideration.
+
+Portfolio website: https://nirajrchaudhari.github.io/
+`,
+      placeholder: '<<PERSON>>, <<COMPANY>>',
+    },
+  ]
 }
 
 function FloatingToolbar(props) {
@@ -124,26 +163,14 @@ function FloatingToolbar(props) {
 
   useEffect(() => {
     // Initialize template messages from chrome.storage when the component mounts
-    // eslint-disable-next-line no-undef
-    chrome.storage.local.get('PersonalChatGPTBoxConfig_templateMessages', function (result) {
-      if (result.PersonalChatGPTBoxConfig_templateMessages) {
-        setTemplateMessages(result.PersonalChatGPTBoxConfig_templateMessages)
-      }
-    })
+
+    getTemplateMessages(setTemplateMessages)
   }, [])
 
   useEffect(async () => {
     // This effect runs when the templatePopupVisible state changes
     const loadTemplateMessages = async () => {
-      // eslint-disable-next-line no-undef
-      await chrome.storage.local.get(
-        'PersonalChatGPTBoxConfig_templateMessages',
-        function (result) {
-          if (result.PersonalChatGPTBoxConfig_templateMessages) {
-            setTemplateMessages(result.PersonalChatGPTBoxConfig_templateMessages)
-          }
-        },
-      )
+      getTemplateMessages(setTemplateMessages)
     }
 
     if (templatePopupVisible) {
