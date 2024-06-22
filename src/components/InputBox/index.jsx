@@ -212,6 +212,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
                   fontSize: '15px',
                   fontFamily: 'Arial, sans-serif',
                   lineHeight: '1.4',
+                  marginBottom: '15px',
                 }
               : {
                   resize: 'vertical',
@@ -219,6 +220,7 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
                   fontSize: '15px',
                   fontFamily: 'Arial, sans-serif',
                   lineHeight: '1.4',
+                  marginBottom: '15px',
                 }
           }
           placeholder={
