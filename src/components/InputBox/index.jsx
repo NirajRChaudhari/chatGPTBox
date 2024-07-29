@@ -155,12 +155,12 @@ export function InputBox({ onSubmit, enabled, postMessage, reverseResizeDir }) {
                 prompt: `Without altering the language used, your task is to expand upon the most recent response, providing additional details or elaborating on the existing content. Maintain the original tone and ensure that all pertinent information is included. The objective is to create a more comprehensive and detailed version of the original response while adhering to the same language and retaining its essence. Provide the extended version, ensuring that no essential points are omitted and avoiding any unnecessary fillers or alterations. Do not wrap responses in quotes.`,
               },
               {
-                tone: 'Professional',
-                prompt: `Without changing the language, your task is to rewrite the most recent response to have a professional tone that conveys a sense of formality, respect, competence, and credibility.  Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+                tone: 'Rephrase',
+                prompt: `Without changing the programming language, your task is to provide a more time or space complexity efficient solution to the most recent response of a coding question. Explain the differences in the new approach compared to the previous one, and include the new time complexity at the end. Ensure the solution is tested, clear, well-commented, and directly addresses the optimization.`,
               },
               {
                 tone: 'Confident',
-                prompt: `Without changing the language, your task is to rewrite the most recent response to have a confident tone, containing assertive and positive word choices, as well as direct and concise statements. Ensure output in the same language variety or dialect of the text - in other words don't change the language ,and only give me the output and nothing else. No fillers. Do not wrap responses in quotes.`,
+                prompt: `The recent solution provided for the coding problem seems incorrect. Without changing the programming language, please reconsider all the mentioned conditions and review your trained data to provide a new, correct solution to the coding question. Ensure the new solution is tested, clear, and well-commented. Additionally, try to understand or guess the problem statement in full detail and answer correctly this time.`,
               },
             ].map((option) => (
               <div

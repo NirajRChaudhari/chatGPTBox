@@ -3,18 +3,17 @@ import {
   CardList,
   EmojiSmile,
   Translate,
-  Braces,
   Globe,
   JournalText,
-  PersonHeart,
   CheckCircleFill,
   Magic,
   ArrowsCollapse,
   ArrowsAngleExpand,
   QuestionSquare,
+  AspectRatio,
+  AspectRatioFill,
 } from 'react-bootstrap-icons'
 import { getPreferredLanguage } from '../../config/language.mjs'
-import { PersonalChatGPTBoxConfig } from '../../config/index.mjs'
 
 const createGenPrompt =
   ({
@@ -69,23 +68,23 @@ export const config = {
     }),
   },
   assistant: {
-    icon: <PersonHeart style={{ ...commonStyle }} />,
-    label: 'Assistant',
+    icon: <AspectRatioFill style={{ ...commonStyle }} />,
+    label: 'Elaborate',
     genPrompt: createGenPrompt({
-      message: `Act as a Career Assistant for ${PersonalChatGPTBoxConfig.full_name}, a highly skilled AI trained in language understanding and writing improvement. Your task is to read the provided Prompt text delimited by triple quotes and offer tailored responses based on ${PersonalChatGPTBoxConfig.first_name}'s professional and academic profile. Always reply as if you are ${PersonalChatGPTBoxConfig.first_name} and the prompt is directed to you. Incorporate relevant details and his 3D portfolio website at http://nirajrchaudhari.github.io/ to highlight his skills when necessary. Use specific details from his resume to provide comprehensive and relevant answers. Access extra information about the topic or company mentioned in the prompt from the online internet and training data if needed.
-
-      Summary of ${PersonalChatGPTBoxConfig.full_name}'s resume:
-      ${PersonalChatGPTBoxConfig.resume_content}
-      
-      Answer the below prompt, when responding as ${PersonalChatGPTBoxConfig.first_name}, tailor your answers to reflect the extensive and specific details of his background and achievements, utilizing his website to enhance your responses where applicable. Maintain professionalism and clarity in tone. Only give me the output as consise message/answer and nothing else, no filler text. Do not wrap responses in quotes. 
-      
-      \n Prompt to Answer is given in triple quotes below:`,
-      includeLanguagePrefix: true,
+      message: `You are a highly skilled AI trained to answer any coding questions. Please read the text delimited by triple quotes and provide a comprehensive solution. Use your trained knowledge to correctly answer the coding question. Provide the solution in Java unless another programming language is explicitly specified in the prompt. Explain the approach and include comments in the code to clarify parts of the code. State the time complexity at the end. Cross-check your answer multiple times to ensure accuracy and provide a clear, direct response.`,
+    }),
+  },
+  code: {
+    icon: <AspectRatio style={{ ...commonStyle }} />,
+    label: 'Expand',
+    genPrompt: createGenPrompt({
+      message:
+        'You are a highly skilled AI trained to answer any coding questions. Please read the text delimited by triple quotes and provide a comprehensive solution. Use your trained knowledge to correctly answer the coding question. Provide the solution in Java unless another programming language is explicitly specified in the prompt. Explain the approach and include comments in the code to clarify parts of the code. State the time complexity at the end. Cross-check your answer multiple times to ensure accuracy and provide a clear, direct response.',
     }),
   },
   answer: {
     icon: <QuestionSquare style={{ ...commonStyle }} />,
-    label: 'Answer',
+    label: 'Simplify',
     genPrompt: createGenPrompt({
       message: `You are a highly skilled AI trained to answer any questions. I would like you to read the text delimited by triple quotes and answer the question. Access your trained knowledge or internet resources to correctly answer the question. Cross-check your answer and provide a comprehensive response. Provide a clear response that addresses the question directly. Do not wrap responses in quotes. Respond in the same language variety or dialect of the given text.`,
     }),
@@ -102,7 +101,7 @@ export const config = {
     icon: <ArrowsCollapse style={{ ...commonStyle }} />,
     label: 'Shorter',
     genPrompt: createGenPrompt({
-      message: `Rewrite the text delimited by triple quotes and output it shorter to be no more than half the number of characters of the original text. Keep the meaning the same. Only give me the output and nothing else.Do not wrap responses in quotes.  Now, using the concepts above, re-write the following text. Respond in the same language variety or dialect of the given text. No fillers. 
+      message: `You are a highly skilled AI trained to answer any coding questions. Please read the text delimited by triple quotes, which includes a coding solution or pseudocode. Provide an alternative approach in Java that improves the time complexity or space complexity of the given solution. Explain your approach thoroughly and include comments in the code to clarify parts of the code. State the time complexity and space complexity at the end. Cross-check your answer multiple times to ensure accuracy and provide a clear, direct response. 
       Text to perform task is given in triple quotes below:`,
     }),
   },
@@ -149,9 +148,8 @@ export const config = {
     icon: <CardHeading style={{ ...commonStyle }} />,
     label: 'Summary',
     genPrompt: createGenPrompt({
-      message: `You are a highly skilled AI trained in language comprehension and summarization. I would like you to read the text delimited by triple quotes and summarize it into a concise abstract paragraph. Aim to retain the most important points, providing a coherent and readable summary that could help a person understand the main points of the discussion without needing to read the entire text. Please avoid unnecessary details or tangential points.
-      Only give me the output and nothing else. Do not wrap responses in quotes. No fillers. Text to perform task is given in triple quotes below:`,
-      includeLanguagePrefix: true,
+      message: `You are a highly skilled AI trained to answer any software engineering questions. Please read the text delimited by triple quotes, which includes a low-level design (LLD) or high-level design (HLD) system design prompt. Provide a comprehensive solution acting as a senior software engineer. Break down your answer into a step-by-step explanation, detailing individual components and their interactions. Include diagrams or code snippets if necessary to illustrate key points. Explain the design choices, trade-offs, and considerations for scalability, reliability, and maintainability. Ensure your response is clear, thorough, and addresses all aspects of the given prompt. Additionally, answer as if you are in an interview, demonstrating your expertise, thought process, and communication skills.
+       Text to perform task is given in triple quotes below:`,
     }),
   },
   sentiment: {
@@ -168,14 +166,6 @@ export const config = {
     label: 'Divide Paragraphs',
     genPrompt: createGenPrompt({
       message: 'Divide the following into paragraphs that are easy to read and understand',
-    }),
-  },
-  code: {
-    icon: <Braces style={{ ...commonStyle }} />,
-    label: 'Code Explain',
-    genPrompt: createGenPrompt({
-      message: 'Explain the following code',
-      includeLanguagePrefix: true,
     }),
   },
 }
